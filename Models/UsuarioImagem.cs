@@ -9,8 +9,9 @@ namespace LockAi.Models
     {
         public int IdImagem { get; set; }
         public int IdUsuario { get; set; }
-        public Usuario Usuario { get; set; }
-         public string EndImagem { get; set; }
+        
+       // public Usuario Usuario { get; set; }
+        public string EndImagem { get; set; }
 
 
     }

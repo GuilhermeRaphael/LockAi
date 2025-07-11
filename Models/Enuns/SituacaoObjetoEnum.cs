@@ -1,6 +1,6 @@
 namespace LockAi.Models.Enuns
 {
-    public enum SituacaoEnum
+    public enum SituacaoObjetoEnum
     {
         Ativo = 1,
         Locado = 2,

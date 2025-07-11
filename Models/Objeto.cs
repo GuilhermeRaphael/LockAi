@@ -14,7 +14,7 @@ namespace LockAi.Models
         public string LocalidadePrimaria { get; set; }
         public string LocalidadeSecundaria { get; set; }
         public string LocalidadeTercearia { get; set; }
-        public SituacaoEnum situacaoEnum { get; set; }
+        public SituacaoObjetoEnum Situacao { get; set; }
         public int IdTipoObjeto { get; set; }
         public DateTime DtInclusao { get; set; }
         public int IdUsuarioInclusao { get; set; }

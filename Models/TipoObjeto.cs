@@ -10,7 +10,7 @@ namespace LockAi.Models
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public SituacaoEnum situacaoEnum { get; set; }
+        public SituacaoObjetoEnum Situacao { get; set; }
         public DateTime DtInclusao { get; set; }
         public int IdUsuarioInclusao { get; set; }
         public DateTime DtAtualizao { get; set; }
