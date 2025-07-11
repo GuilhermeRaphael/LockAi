@@ -38,7 +38,9 @@ namespace LockAi.Data
 
              modelBuilder.Entity<RepresentanteLegal>().HasData
             (
-                
+                new RepresentanteLegal() {Id = 1,Nome = "Mariana Alves",Cpf = "12345678901",Telefone = "11912345678",Email = "mariana.alves@example.com",IdUsuario = 1},
+                new RepresentanteLegal(){Id = 2,Nome = "Carlos Henrique",Cpf = "98765432100",Telefone = "21998765432",Email = "carlos.henrique@example.com",IdUsuario = 2},
+                new RepresentanteLegal(){Id = 3,Nome = "Fernanda Costa",Cpf = "45678912333",Telefone = "31934567890",Email = "fernanda.costa@example.com",IdUsuario = 3}
             );
 
             modelBuilder.Entity<Usuario>()
