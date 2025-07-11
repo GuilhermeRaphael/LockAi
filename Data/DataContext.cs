@@ -18,6 +18,8 @@ namespace LockAi.Data
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<TipoUsuario> TiposUsuario { get; set; }
         public DbSet<UsuarioImagem> UsuarioImagens { get; set; }
+        public DbSet<RepresentanteLegal> RepresentanteLegal { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +34,11 @@ namespace LockAi.Data
             modelBuilder.Entity<Usuario>().HasData
             (
                 new Usuario() { Id = 1, Nome = "Admin", Cpf = "46284605874", Login = "ADM", Email = "adm@gmail.com", DtNascimento = new DateTime(2006, 4, 7), Telefone = "11971949976", IdTipoUsuario = 2, Senha = "*123456HAS*", Situacao = SituacaoUsuario.Ativo, DtSituacao = new DateTime(2025, 7, 10), IdUsuarioSituacao = 1, RepresentanteLegalId = null }
+            );
+
+             modelBuilder.Entity<RepresentanteLegal>().HasData
+            (
+                
             );
 
             modelBuilder.Entity<Usuario>()
