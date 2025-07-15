@@ -33,20 +33,22 @@ namespace LockAi.Data
 
             modelBuilder.Entity<Usuario>().HasData
             (
-                new Usuario() { Id = 1, Nome = "Admin", Cpf = "46284605874", Login = "ADM", Email = "adm@gmail.com", DtNascimento = new DateTime(2006, 4, 7), Telefone = "11971949976", IdTipoUsuario = 2, Senha = "*123456HAS*", Situacao = SituacaoUsuario.Ativo, DtSituacao = new DateTime(2025, 7, 10), IdUsuarioSituacao = 1, RepresentanteLegalId = null }
+                new Usuario() { Id = 1, Nome = "Admin", Cpf = "46284605874", Login = "ADM", Email = "adm@gmail.com", DtNascimento = new DateTime(2006, 4, 7), Telefone = "11971949976", IdTipoUsuario = 2, Senha = "*123456HAS*", Situacao = SituacaoUsuario.Ativo, DtSituacao = new DateTime(2025, 7, 10), IdUsuarioSituacao = 1, RepresentanteLegalId = null },
+                new Usuario() { Id = 3, Nome = "João Silva", Cpf = "12345678900", Login = "joaos", Email = "joao.silva@example.com", DtNascimento = new DateTime(2010, 5, 15), Telefone = "11987654321", IdTipoUsuario = 1, Senha = "*senha123*", Situacao = SituacaoUsuario.Ativo, DtSituacao = new DateTime(2025,7,14), IdUsuarioSituacao = 1, RepresentanteLegalId = 1 }            
+            
             );
 
              modelBuilder.Entity<RepresentanteLegal>().HasData
             (
-                new RepresentanteLegal() {Id = 1,Nome = "Mariana Alves",Cpf = "12345678901",Telefone = "11912345678",Email = "mariana.alves@example.com",IdUsuario = 1},
-                new RepresentanteLegal(){Id = 2,Nome = "Carlos Henrique",Cpf = "98765432100",Telefone = "21998765432",Email = "carlos.henrique@example.com",IdUsuario = 2},
-                new RepresentanteLegal(){Id = 3,Nome = "Fernanda Costa",Cpf = "45678912333",Telefone = "31934567890",Email = "fernanda.costa@example.com",IdUsuario = 3}
+                new RepresentanteLegal() {Id = 1,Nome = "Mariana Alves",Cpf = "12345678901",Telefone = "11912345678",Email = "mariana.alves@example.com"},
+                new RepresentanteLegal() {Id = 2,Nome = "Carlos Henrique",Cpf = "98765432100",Telefone = "21998765432",Email = "carlos.henrique@example.com"},
+                new RepresentanteLegal() {Id = 3,Nome = "Fernanda Costa",Cpf = "45678912333",Telefone = "31934567890",Email = "fernanda.costa@example.com",}
             );
 
             modelBuilder.Entity<Usuario>()
             .HasOne(u => u.RepresentanteLegal)
-            .WithOne(r => r.Usuario)
-            .HasForeignKey<Usuario>(u => u.RepresentanteLegalId);
+            .WithMany(r => r.Usuarios)
+            .HasForeignKey(u => u.RepresentanteLegalId);
 
             modelBuilder.Entity<UsuarioImagem>()
             .HasKey(ui => ui.IdImagem);

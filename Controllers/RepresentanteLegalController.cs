@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using LockAi.Data;
 using LockAi.Models;
 using Microsoft.EntityFrameworkCore;
+using LockAi.Dtos;
 
 namespace LockAi.Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
+    [Route("[controller]")]
     public class RepresentanteLegalController : ControllerBase
     {
         private readonly DataContext _context;
@@ -26,6 +27,7 @@ namespace LockAi.Controllers
             try
             {
                 RepresentanteLegal representante = await _context.RepresentanteLegal
+                    .Include(r => r.Usuarios)
                     .FirstOrDefaultAsync(rBusca => rBusca.Id == id);
 
                 if (representante == null)
@@ -57,34 +59,55 @@ namespace LockAi.Controllers
             }
         }
 
-        // EM AMDAMENTO
-        /*
-        [HttpPut("{id}")]
-          public async Task<IActionResult> AlterarEmail(int id, [FromBody]UpdateRepresentanteEmailDto dados)
-          {
-              try
-              {
-                  RepresentanteLegal representante = await _context.RepresentanteLegal
-                      .FirstOrDefaultAsync(r => r.Id == id);
+        [HttpPatch("{id}/email")]
+        public async Task<IActionResult> AlterarEmail(int id, [FromBody] AlterarEmailDto dto)
+        {
+            try
+            {
+                var representante = await _context.RepresentanteLegal
+                    .FirstOrDefaultAsync(r => r.Id == id);
 
-                  if (representante == null)
-                      return NotFound("Representante legal não encontrado.");
+                if (representante == null)
+                    return NotFound("Representante legal não encontrado.");
 
-                  representante.Email = dados.Email;
+                representante.Email = dto.Email; //Atualiza o email antigo com o novo enviado
 
-                  await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                  return Ok(representante);
-              }
-              catch (Exception ex)
-              {
-                  return BadRequest($"Erro ao alterar email: {ex.Message}");
-              }
-              */
+                return Ok(representante);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao alterar email: {ex.Message}");
+            }
+            // DTO (Data Transfer Object)
+            // Usado para receber ou enviar apenas os dados necessários entre o frontend e a API.
+            // Isso evita expor ou alterar todo o objeto da model (RepresentanteLegal) acidentalmente.
+            // Neste caso, usamos o DTO para alterar apenas o email do representante legal.
+        }
 
-          
+            [HttpPatch("{id}/telefone")]
+            public async Task<IActionResult> AlterarTelefone(int id, [FromBody] AlterarTelefoneDto dto)
+            {
+                try
+                {
+                    var representante = await _context.RepresentanteLegal
+                        .FirstOrDefaultAsync(r => r.Id == id);
 
+                    if (representante == null)
+                        return NotFound("Representante legal não encontrado.");
 
+                    representante.Telefone = dto.Telefone;
+
+                    await _context.SaveChangesAsync();
+
+                    return Ok(representante);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"Erro ao alterar telefone: {ex.Message}");
+                }
+            }
 
         public void ValidarRepresentante(RepresentanteLegal representanteLegal)
         {
@@ -97,8 +120,6 @@ namespace LockAi.Controllers
             if (string.IsNullOrWhiteSpace(representanteLegal.Telefone))
                 throw new Exception("Telefone é obrigatório.");
 
-            if (representanteLegal.IdUsuario <= 0)
-                throw new Exception("ID de usuário inválido.");
         }
 
 

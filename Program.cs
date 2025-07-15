@@ -10,9 +10,12 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoLocal")));
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.MaxDepth = 64; // Opcional, para aumentar a profundidade máxima
+});
 
-
-builder.Services.AddControllers();
 
 var app = builder.Build();
 

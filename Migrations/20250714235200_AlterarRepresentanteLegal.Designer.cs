@@ -4,6 +4,7 @@ using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250714235200_AlterarRepresentanteLegal")]
+    partial class AlterarRepresentanteLegal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +41,9 @@ namespace LockAi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -56,6 +62,7 @@ namespace LockAi.Migrations
                             Id = 1,
                             Cpf = "12345678901",
                             Email = "mariana.alves@example.com",
+                            IdUsuario = 1,
                             Nome = "Mariana Alves",
                             Telefone = "11912345678"
                         },
@@ -64,6 +71,7 @@ namespace LockAi.Migrations
                             Id = 2,
                             Cpf = "98765432100",
                             Email = "carlos.henrique@example.com",
+                            IdUsuario = 2,
                             Nome = "Carlos Henrique",
                             Telefone = "21998765432"
                         },
@@ -72,6 +80,7 @@ namespace LockAi.Migrations
                             Id = 3,
                             Cpf = "45678912333",
                             Email = "fernanda.costa@example.com",
+                            IdUsuario = 3,
                             Nome = "Fernanda Costa",
                             Telefone = "31934567890"
                         });
@@ -166,7 +175,9 @@ namespace LockAi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RepresentanteLegalId");
+                    b.HasIndex("RepresentanteLegalId")
+                        .IsUnique()
+                        .HasFilter("[RepresentanteLegalId] IS NOT NULL");
 
                     b.HasIndex("TipoUsuarioId");
 
@@ -190,7 +201,7 @@ namespace LockAi.Migrations
                         },
                         new
                         {
-                            Id = 3,
+                            Id = 4,
                             Cpf = "12345678900",
                             DtNascimento = new DateTime(2010, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DtSituacao = new DateTime(2025, 7, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -234,8 +245,8 @@ namespace LockAi.Migrations
             modelBuilder.Entity("LockAi.Models.Usuario", b =>
                 {
                     b.HasOne("LockAi.Models.RepresentanteLegal", "RepresentanteLegal")
-                        .WithMany("Usuarios")
-                        .HasForeignKey("RepresentanteLegalId");
+                        .WithOne("Usuario")
+                        .HasForeignKey("LockAi.Models.Usuario", "RepresentanteLegalId");
 
                     b.HasOne("LockAi.Models.TipoUsuario", null)
                         .WithMany("Usuarios")
@@ -253,7 +264,8 @@ namespace LockAi.Migrations
 
             modelBuilder.Entity("LockAi.Models.RepresentanteLegal", b =>
                 {
-                    b.Navigation("Usuarios");
+                    b.Navigation("Usuario")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LockAi.Models.TipoUsuario", b =>

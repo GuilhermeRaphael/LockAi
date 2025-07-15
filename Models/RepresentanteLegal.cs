@@ -14,7 +14,6 @@ namespace LockAi.Models
         public string Telefone { get; set; }
         public string Email { get; set; }
         
-        public int IdUsuario { get; set; }
-        public Usuario Usuario { get; set; }
+        public List<Usuario> Usuarios { get; set; } = new List<Usuario>();
     }
 }

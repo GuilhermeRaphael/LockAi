@@ -26,7 +26,9 @@ namespace LockAi.Controllers
         {
             try
             {
-                Usuario usuario = await _context.Usuarios.FirstOrDefaultAsync(uBusca => uBusca.Id == id);
+                Usuario usuario = await _context.Usuarios
+                .Include(u => u.RepresentanteLegal)
+                .FirstOrDefaultAsync(uBusca => uBusca.Id == id);
 
                 if (usuario == null)
                 {
