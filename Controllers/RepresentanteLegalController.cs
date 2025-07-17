@@ -114,7 +114,7 @@ namespace LockAi.Controllers
             if (string.IsNullOrWhiteSpace(representanteLegal.Nome))
                 throw new Exception("Nome é obrigatório.");
 
-            if (string.IsNullOrWhiteSpace(representanteLegal.Cpf) || representanteLegal.Cpf.Length != 11) //se CPF ultrapassar os 11 digitos
+            if (string.IsNullOrWhiteSpace(representanteLegal.Cpf) || representanteLegal.Cpf.Length != 11) //se CPF for diferente á 11 digitos
                 throw new Exception("CPF inválido.");
 
             if (string.IsNullOrWhiteSpace(representanteLegal.Telefone))

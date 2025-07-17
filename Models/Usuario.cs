@@ -16,12 +16,12 @@ namespace LockAi.Models
         public string Email { get; set; }
         public DateTime DtNascimento { get; set; }
         public string Telefone { get; set; }
-        public int IdTipoUsuario { get; set; }
+        public int TipoUsuarioId { get; set; }
+        public TipoUsuario TipoUsuario { get; set; }
         public string Senha { get; set; }
         public SituacaoUsuario Situacao { get; set; }
         public DateTime DtSituacao { get; set; }
         public int IdUsuarioSituacao { get; set; }
-       // public TipoUsuario TipoUsuario { get; set; }
         public int? RepresentanteLegalId { get; set; } //relacionamento 1:1 com RepresentanteLegal
         public RepresentanteLegal? RepresentanteLegal { get; set; }
         public ICollection<UsuarioImagem> Imagens { get; set; }
