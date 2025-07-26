@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LockAi.Models;
 using LockAi.Models.Enuns;
+using LockAi.Utils;
 
 namespace LockAi.Data
 {
@@ -19,6 +20,7 @@ namespace LockAi.Data
         public DbSet<TipoUsuario> TiposUsuario { get; set; }
         public DbSet<UsuarioImagem> UsuarioImagens { get; set; }
         public DbSet<RepresentanteLegal> RepresentanteLegal { get; set; }
+        public DbSet<Objeto> Objetos{ get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,12 +33,12 @@ namespace LockAi.Data
             );
 
 
-            modelBuilder.Entity<Usuario>().HasData
+            /*modelBuilder.Entity<Usuario>().HasData
             (
                 new Usuario() { Id = 1, Nome = "Admin", Cpf = "46284605874", Login = "ADM", Email = "adm@gmail.com", DtNascimento = new DateTime(2006, 4, 7), Telefone = "11971949976", TipoUsuarioId = 2, Senha = "*123456HAS*", Situacao = SituacaoUsuario.Ativo, DtSituacao = new DateTime(2025, 7, 10), IdUsuarioSituacao = 1, RepresentanteLegalId = null },
                 new Usuario() { Id = 3, Nome = "João Silva", Cpf = "12345678900", Login = "joaos", Email = "joao.silva@example.com", DtNascimento = new DateTime(2010, 5, 15), Telefone = "11987654321", TipoUsuarioId = 1, Senha = "*senha123*", Situacao = SituacaoUsuario.Ativo, DtSituacao = new DateTime(2025, 7, 14), IdUsuarioSituacao = 1, RepresentanteLegalId = 1 }
 
-            );
+            );*/
 
             modelBuilder.Entity<RepresentanteLegal>().HasData
            (
@@ -52,7 +54,7 @@ namespace LockAi.Data
 
             modelBuilder.Entity<UsuarioImagem>()
             .HasKey(ui => ui.IdImagem);
-            
+
             modelBuilder.Entity<Usuario>()
             .HasOne(u => u.TipoUsuario)
             .WithMany(t => t.Usuarios)

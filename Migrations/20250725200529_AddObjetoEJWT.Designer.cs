@@ -4,6 +4,7 @@ using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250725200529_AddObjetoEJWT")]
+    partial class AddObjetoEJWT
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,14 +198,12 @@ namespace LockAi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<int?>("RepresentanteLegalId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Situacao")
                         .HasColumnType("int");
@@ -221,6 +222,39 @@ namespace LockAi.Migrations
                     b.HasIndex("TipoUsuarioId");
 
                     b.ToTable("Usuarios");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Cpf = "46284605874",
+                            DtNascimento = new DateTime(2006, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DtSituacao = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "adm@gmail.com",
+                            IdUsuarioSituacao = 1,
+                            Login = "ADM",
+                            Nome = "Admin",
+                            Senha = "*123456HAS*",
+                            Situacao = 1,
+                            Telefone = "11971949976",
+                            TipoUsuarioId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Cpf = "12345678900",
+                            DtNascimento = new DateTime(2010, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DtSituacao = new DateTime(2025, 7, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "joao.silva@example.com",
+                            IdUsuarioSituacao = 1,
+                            Login = "joaos",
+                            Nome = "João Silva",
+                            RepresentanteLegalId = 1,
+                            Senha = "*senha123*",
+                            Situacao = 1,
+                            Telefone = "11987654321",
+                            TipoUsuarioId = 1
+                        });
                 });
 
             modelBuilder.Entity("LockAi.Models.UsuarioImagem", b =>

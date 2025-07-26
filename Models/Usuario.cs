@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using LockAi.Models.Enuns;
@@ -9,8 +10,16 @@ namespace LockAi.Models
 {
     public class Usuario
     {
+        
+        //Falta implementar o HAS SALT!!
+
+
+        [NotMapped]
+        public string Token { get; set; } = string.Empty;
         public int Id { get; set; }
         public string Nome { get; set; }
+        public byte[]? PasswordHash { get; set; }
+        public byte[]? PasswordSalt { get; set; }
         public string Cpf { get; set; }
         public string Login { get; set; }
         public string Email { get; set; }
@@ -18,6 +27,7 @@ namespace LockAi.Models
         public string Telefone { get; set; }
         public int TipoUsuarioId { get; set; }
         public TipoUsuario TipoUsuario { get; set; }
+        [NotMapped]
         public string Senha { get; set; }
         public SituacaoUsuario Situacao { get; set; }
         public DateTime DtSituacao { get; set; }
