@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LockAi.Data;
+using LockAi.Dtos;
 using LockAi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace LockAi.Controllers
 {
@@ -43,6 +45,43 @@ namespace LockAi.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<IActionResult> AlterarSenha([FromBody] AlterarSenhaDto dados)
+        {
+            try
+            {
+                var usuario = await _context.Usuarios.FindAsync(dados.UsuarioId);
+
+                if (usuario == null)
+                {
+                    return NotFound("Usuario não encontrado");
+                }
+
+                if (usuario.Senha != dados.SenhaAtual)
+                {
+                    return BadRequest("Senha atual incorreta");
+                }
+
+                if (string.IsNullOrWhiteSpace(dados.NovaSenha) || dados.NovaSenha.Length < 6)
+                {
+                    {
+                        return BadRequest("Nova senha deve ter ao menos 6 caracteres");
+                    }
+                }
+
+                usuario.Senha = dados.NovaSenha;
+
+                _context.Usuarios.Update(usuario);
+                await _context.SaveChangesAsync();
+
+                return Ok("Senha altera com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro INTERNO: " + ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddUsuario([FromBody] Usuario novoUsuario)
         {
@@ -60,6 +99,29 @@ namespace LockAi.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> ExcluirUsuario(int id)
+        {
+            try
+            {
+                var usuario = await _context.Usuarios.FindAsync(id);
+
+                if (usuario == null)
+                {
+                    return NotFound("Usuario não encontrado");
+                }
+
+                _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+
+                return Ok("Usuario deletado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno: " + ex.Message);
+            }
+        }
+        
         public void ValidarUsuario(Usuario usuario)
         {
             var atual = DateTime.Today; // Pega a data atual
