@@ -13,6 +13,5 @@ namespace LockAi.Models
        // public Usuario Usuario { get; set; }
         public string EndImagem { get; set; }
 
-
     }
 }
