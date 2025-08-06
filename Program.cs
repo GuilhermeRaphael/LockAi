@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoLocal")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoSomee")));
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
