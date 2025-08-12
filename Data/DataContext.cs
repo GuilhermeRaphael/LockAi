@@ -19,6 +19,7 @@ namespace LockAi.Data
         public DbSet<TipoUsuario> TiposUsuario { get; set; }
         public DbSet<UsuarioImagem> UsuarioImagens { get; set; }
         public DbSet<RepresentanteLegal> RepresentanteLegal { get; set; }
+        public DbSet<Locacao> Locacao { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,6 +46,11 @@ namespace LockAi.Data
                new RepresentanteLegal() { Id = 3, Nome = "Fernanda Costa", Cpf = "45678912333", Telefone = "31934567890", Email = "fernanda.costa@example.com" }
            );
 
+            modelBuilder.Entity<Locacao>().HasData
+            (
+              new Locacao() { Id = 1, IdPropostaLocacao = 3, IdUsuario = 1, DataInicio = new DateTime(2025, 4, 7), DataFim = new DateTime(2025, 11, 12), Valor = 500, Situacao = SituacaoLocacaoEnum.Ativa, DataSituacao = "2025-04-07", IdUsuarioSituacao = 1 }
+            );
+
             modelBuilder.Entity<Usuario>()
             .HasOne(u => u.RepresentanteLegal)
             .WithMany(r => r.Usuarios)
@@ -52,13 +58,16 @@ namespace LockAi.Data
 
             modelBuilder.Entity<UsuarioImagem>()
             .HasKey(ui => ui.IdImagem);
-            
+
             modelBuilder.Entity<Usuario>()
             .HasOne(u => u.TipoUsuario)
             .WithMany(t => t.Usuarios)
             .HasForeignKey(u => u.TipoUsuarioId);
 
-
+            modelBuilder.Entity<Locacao>()
+            .HasOne(l => l.Usuario)
+            .WithMany(u => u.Locacoes) 
+            .HasForeignKey(l => l.IdUsuario);
 
         }
 
