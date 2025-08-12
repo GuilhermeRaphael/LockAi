@@ -41,7 +41,7 @@ namespace LockAi.Controllers
             }
         }
 
-        [HttpGet("GetAll")] // Lista todos os represntates legais
+        [HttpGet("GetAll")] // Lista todos os representates legais
         public async Task<IActionResult> GetTiposUsuario()
         {
             try
