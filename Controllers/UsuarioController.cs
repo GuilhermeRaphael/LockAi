@@ -8,6 +8,8 @@ using LockAi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using BCrypt.Net;
+
 
 namespace LockAi.Controllers
 {
@@ -57,7 +59,7 @@ namespace LockAi.Controllers
                     return NotFound("Usuario não encontrado");
                 }
 
-                if (usuario.Senha != dados.SenhaAtual)
+                if (!BCrypt.Net.BCrypt.Verify(dados.SenhaAtual, usuario.Senha))
                 {
                     return BadRequest("Senha atual incorreta");
                 }
@@ -69,7 +71,7 @@ namespace LockAi.Controllers
                     }
                 }
 
-                usuario.Senha = dados.NovaSenha;
+                usuario.Senha = BCrypt.Net.BCrypt.HashPassword(dados.NovaSenha);
 
                 _context.Usuarios.Update(usuario);
                 await _context.SaveChangesAsync();
@@ -88,6 +90,9 @@ namespace LockAi.Controllers
             try
             {
                 ValidarUsuario(novoUsuario); //vai usar o metodo de validacao para validar o usuario e o representante
+
+                novoUsuario.Senha = BCrypt.Net.BCrypt.HashPassword(novoUsuario.Senha);
+
                 _context.Usuarios.Add(novoUsuario); //adiciona no banco
                 await _context.SaveChangesAsync();
 
@@ -121,7 +126,7 @@ namespace LockAi.Controllers
                 return StatusCode(500, "Erro interno: " + ex.Message);
             }
         }
-        
+
         public void ValidarUsuario(Usuario usuario)
         {
             var atual = DateTime.Today; // Pega a data atual
@@ -141,6 +146,7 @@ namespace LockAi.Controllers
             }
         }
 
+        
 
     }
 }

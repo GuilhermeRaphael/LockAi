@@ -25,5 +25,6 @@ namespace LockAi.Models
         public int? RepresentanteLegalId { get; set; } //relacionamento 1:1 com RepresentanteLegal
         public RepresentanteLegal? RepresentanteLegal { get; set; }
         public ICollection<UsuarioImagem> Imagens { get; set; }
+        public ICollection<Requerimento> Requerimentos { get; set; }
     }
 }

@@ -19,7 +19,8 @@ namespace LockAi.Data
         public DbSet<TipoUsuario> TiposUsuario { get; set; }
         public DbSet<UsuarioImagem> UsuarioImagens { get; set; }
         public DbSet<RepresentanteLegal> RepresentanteLegal { get; set; }
-
+        public DbSet<Requerimento> Requerimentos { get; set; }
+        public DbSet<Objeto> Objetos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,11 +53,16 @@ namespace LockAi.Data
 
             modelBuilder.Entity<UsuarioImagem>()
             .HasKey(ui => ui.IdImagem);
-            
+
             modelBuilder.Entity<Usuario>()
             .HasOne(u => u.TipoUsuario)
             .WithMany(t => t.Usuarios)
             .HasForeignKey(u => u.TipoUsuarioId);
+
+          modelBuilder.Entity<Requerimento>()
+            .HasOne(r => r.Usuario)
+            .WithMany(u => u.Requerimentos)
+            .HasForeignKey(r => r.UsuarioId);
 
 
 

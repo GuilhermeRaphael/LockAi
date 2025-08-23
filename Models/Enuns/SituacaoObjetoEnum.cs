@@ -4,6 +4,7 @@ namespace LockAi.Models.Enuns
     {
         Ativo = 1,
         Locado = 2,
-        Revisao = 3 
+        Revisao = 3,
+        Reservado = 4
     }
 }
