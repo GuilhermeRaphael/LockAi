@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LockAi.Data;
+using LockAi.Models;
 using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LockAi.Controllers
 {
@@ -25,7 +27,7 @@ namespace LockAi.Controllers
         {
             try
             {
-                List<Requerimentos> lista = await _context.Requerimentos.Include(r => r.Usuarios).ToListAsync();
+                List<Requerimento> lista = await _context.Requerimentos.Include(r => r.Usuario).ToListAsync();
 
                 return Ok(lista);
             }
@@ -37,11 +39,11 @@ namespace LockAi.Controllers
 
         // Consultar por ID
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetRequerimentoId(int Id)
+        public async Task<IActionResult> GetRequerimentoId(int id)
         {
             try
             {
-                Requerimentos requerimentos = await _context.Requerimentos.Include(r => r.Usuarios).FirstOrDefaultAsync(rBusca => rBusca.Id == id);
+                Requerimento requerimentos = await _context.Requerimentos.Include(r => r.Usuario).FirstOrDefaultAsync(rBusca => rBusca.Id == id);
 
                 if (requerimentos == null)
                     return NotFound("Requerimento não encontrado.");

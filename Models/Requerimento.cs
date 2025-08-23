@@ -8,7 +8,7 @@ namespace LockAi.Models
 {
     public class Requerimento
     {
-        public Usuario IdUsuario { get; set; }
+        public int IdUsuario { get; set; }
         public int Id { get; set; }
         public DateTime Momento { get; set; }
         public int IdTipoRequerimento { get; set; }
@@ -19,5 +19,7 @@ namespace LockAi.Models
         public SituacaoRequerimentoEnum Situacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
         public int IdUsuarioAtualizacao { get; set; }
+
+        public Usuario Usuario { get; set; } 
     }
 }
