@@ -146,7 +146,5 @@ namespace LockAi.Controllers
             }
         }
 
-        
-
     }
 }
