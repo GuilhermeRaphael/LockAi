@@ -64,6 +64,8 @@ namespace LockAi.Controllers
                 if (novoRequerimento == null)
                     return BadRequest("Dados inválidos.");
 
+                novoRequerimento.Situacao = SituacaoRequerimentoEnum.EmAnalise;
+
                 _context.Requerimentos.Add(novoRequerimento);
                 await _context.SaveChangesAsync();
 
@@ -84,6 +86,34 @@ namespace LockAi.Controllers
                 .ToListAsync();
 
             return Ok(requerimentos);
+        }
+
+        [HttpPut("{id}/aprovar")]
+        public async Task<IActionResult> Aprovar(int id)
+        {
+            var requerimento = await _context.Requerimentos.FindAsync(id);
+
+            if (requerimento == null)
+                return NotFound("Requerimento não encontrado.");
+
+            requerimento.Situacao = SituacaoRequerimentoEnum.Aprovado;
+            await _context.SaveChangesAsync();
+
+            return Ok(requerimento);
+        }
+
+        [HttpPut("{id}/reprovar")]
+        public async Task<IActionResult> Reprovar(int id)
+        {
+            var requerimento = await _context.Requerimentos.FindAsync(id);
+
+            if (requerimento == null)
+                return NotFound("Requerimento não encontrado.");
+
+            requerimento.Situacao = SituacaoRequerimentoEnum.Reprovado;
+            await _context.SaveChangesAsync();
+
+            return Ok(requerimento);
         }
     }
 }

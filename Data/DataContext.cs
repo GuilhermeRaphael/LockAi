@@ -20,6 +20,7 @@ namespace LockAi.Data
         public DbSet<UsuarioImagem> UsuarioImagens { get; set; }
         public DbSet<RepresentanteLegal> RepresentanteLegal { get; set; }
         public DbSet<Requerimento> Requerimentos { get; set; }
+        public DbSet<TipoRequerimento> TiposRequerimento { get; set; }
         public DbSet<Objeto> Objetos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
