@@ -4,6 +4,7 @@ using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250826190044_AddRequerimentoAddTipoRequerimento")]
+    partial class AddRequerimentoAddTipoRequerimento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,7 +198,7 @@ namespace LockAi.Migrations
                     b.Property<DateTime>("DataAlteracao")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DataInclusao")
+                    b.Property<DateTime>("DataInclusão")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
@@ -205,7 +208,7 @@ namespace LockAi.Migrations
                     b.Property<int>("IdUsuarioAtualizacao")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUsuarioInclusao")
+                    b.Property<int>("IdUsuarioInclusão")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
@@ -215,20 +218,10 @@ namespace LockAi.Migrations
                     b.Property<int>("Situacao")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsuarioAtualizacaoId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UsuarioInclusaoId")
-                        .HasColumnType("int");
-
                     b.Property<float>("Valor")
                         .HasColumnType("real");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UsuarioAtualizacaoId");
-
-                    b.HasIndex("UsuarioInclusaoId");
 
                     b.ToTable("TiposRequerimento");
 
@@ -237,10 +230,10 @@ namespace LockAi.Migrations
                         {
                             Id = 1,
                             DataAlteracao = new DateTime(2025, 8, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DataInclusao = new DateTime(2025, 8, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DataInclusão = new DateTime(2025, 8, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Descricao = "Solicitação para trancar matrícula do semestre",
                             IdUsuarioAtualizacao = 1,
-                            IdUsuarioInclusao = 1,
+                            IdUsuarioInclusão = 1,
                             Nome = "Trancamento de Matrícula",
                             Situacao = 0,
                             Valor = 0f
@@ -415,21 +408,6 @@ namespace LockAi.Migrations
                     b.Navigation("TipoRequerimento");
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("LockAi.Models.TipoRequerimento", b =>
-                {
-                    b.HasOne("LockAi.Models.Usuario", "UsuarioAtualizacao")
-                        .WithMany()
-                        .HasForeignKey("UsuarioAtualizacaoId");
-
-                    b.HasOne("LockAi.Models.Usuario", "UsuarioInclusao")
-                        .WithMany()
-                        .HasForeignKey("UsuarioInclusaoId");
-
-                    b.Navigation("UsuarioAtualizacao");
-
-                    b.Navigation("UsuarioInclusao");
                 });
 
             modelBuilder.Entity("LockAi.Models.Usuario", b =>

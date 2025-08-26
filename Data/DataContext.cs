@@ -47,6 +47,17 @@ namespace LockAi.Data
                new RepresentanteLegal() { Id = 3, Nome = "Fernanda Costa", Cpf = "45678912333", Telefone = "31934567890", Email = "fernanda.costa@example.com" }
            );
 
+            modelBuilder.Entity<TipoRequerimento>().HasData
+            (
+                new TipoRequerimento() { Id = 1, Nome = "Trancamento de Matrícula", Descricao = "Solicitação para trancar matrícula do semestre", Valor = 0f, Situacao = SituacaoTipoRequerimentoEnum.EmAnalise, DataInclusao = new DateTime(2025, 8, 26), IdUsuarioInclusao = 1, DataAlteracao = new DateTime(2025, 8, 26), IdUsuarioAtualizacao = 1 }
+            );
+            
+
+            modelBuilder.Entity<Requerimento>().HasData
+            (
+                new Requerimento { Id = 1, Momento = new DateTime(2025, 8, 26, 10, 0, 0), TipoRequerimentoId = 1, IdLocacao = 101, Observacao = "Solicitação enviada pelo aluno João", Situacao = SituacaoRequerimentoEnum.EmAnalise, DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0), UsuarioId = 3 }
+            );
+
             modelBuilder.Entity<Usuario>()
             .HasOne(u => u.RepresentanteLegal)
             .WithMany(r => r.Usuarios)
@@ -60,15 +71,16 @@ namespace LockAi.Data
             .WithMany(t => t.Usuarios)
             .HasForeignKey(u => u.TipoUsuarioId);
 
-          modelBuilder.Entity<Requerimento>()
+            modelBuilder.Entity<Requerimento>()
             .HasOne(r => r.Usuario)
             .WithMany(u => u.Requerimentos)
             .HasForeignKey(r => r.UsuarioId);
 
-
-
+            modelBuilder.Entity<Requerimento>()
+            .HasOne(p => p.TipoRequerimento)
+            .WithMany(u => u.Requerimentos)
+            .HasForeignKey(p => p.TipoRequerimentoId);
         }
-
     }
 }
 

@@ -5,6 +5,7 @@ namespace LockAi.Models.Enuns
         EmAnalise,
         Ativo,
         Inativo,
-        Reprovado
+        Reprovado,
+        Excluido
     }
 }

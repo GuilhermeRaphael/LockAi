@@ -13,9 +13,12 @@ namespace LockAi.Models
         public string Descricao { get; set; }
         public float Valor { get; set; }
         public SituacaoTipoRequerimentoEnum Situacao { get; set; }
-        public DateTime DataInclusão { get; set; }
-        public int IdUsuarioInclusão { get; set; }
+        public DateTime DataInclusao { get; set; }
+        public int IdUsuarioInclusao { get; set; } // FK
+        public Usuario? UsuarioInclusao { get; set; } // navegação opcional
         public DateTime DataAlteracao { get; set; }
         public int IdUsuarioAtualizacao { get; set; }
+        public Usuario? UsuarioAtualizacao { get; set; }
+        public ICollection<Requerimento> Requerimentos { get; set; }
     }
 }

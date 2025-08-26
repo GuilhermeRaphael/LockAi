@@ -8,6 +8,7 @@ using LockAi.Models;
 using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 
 namespace LockAi.Controllers
@@ -47,10 +48,11 @@ namespace LockAi.Controllers
         {
             try
             {
-                List<TipoRequerimento> lista = await _context.TiposRequerimento
-                .Include(t => t.IdUsuarioInclusão)
-                .Include(t => t.IdUsuarioAtualizacao)
-                .ToListAsync();
+                var lista = await _context.TiposRequerimento
+                          .Include(t => t.UsuarioInclusao)
+                          .Include(t => t.UsuarioAtualizacao)
+                          .Include(t => t.Requerimentos)
+                          .ToListAsync();
 
                 return Ok(lista);
             }
@@ -66,10 +68,13 @@ namespace LockAi.Controllers
             try
             {
                 novoTipoRequerimento.Situacao = SituacaoTipoRequerimentoEnum.EmAnalise;
-                novoTipoRequerimento.DataInclusão = DateTime.Now;
-                novoTipoRequerimento.IdUsuarioInclusão = GetUsuarioLogadoId();
+                novoTipoRequerimento.DataInclusao = DateTime.Now;
                 novoTipoRequerimento.DataAlteracao = DateTime.Now;
-                novoTipoRequerimento.IdUsuarioAtualizacao = GetUsuarioLogadoId();
+
+                var usuario = await GetUsuarioLogadoAsync();
+                novoTipoRequerimento.IdUsuarioInclusao = usuario.Id;
+                novoTipoRequerimento.IdUsuarioAtualizacao = usuario.Id;
+
 
                 _context.TiposRequerimento.Add(novoTipoRequerimento);
                 await _context.SaveChangesAsync();
@@ -81,11 +86,11 @@ namespace LockAi.Controllers
             }
         }
 
-        private int GetUsuarioLogadoId()
+        private async Task<Usuario> GetUsuarioLogadoAsync()
         {
-            //Falta implementar melhor o metodo pois ele prenche o user "1"
-            return 1;
+            return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto
         }
+
 
         [HttpPatch("AlterarValor/{idTipo}")]
         public async Task<IActionResult> PatchAlterarValor(int idTipo, [FromBody] AlterarValorDtos dto)
@@ -110,9 +115,37 @@ namespace LockAi.Controllers
             }
         }
 
-        // ENDPOINT excluirLogico....
+        // ENDPOINT excluirLogico.
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> ExcluirTipoRequerimento(int id)
+        {
+            try
+            {
+                TipoRequerimento tipoRequerimento = await _context.TiposRequerimento.FindAsync(id);
+
+                if (tipoRequerimento == null)
+                    return NotFound("Tipo de requerimento não encontrado.");
+
+                //Exclusão Logica
+                tipoRequerimento.Situacao = SituacaoTipoRequerimentoEnum.Excluido;
+                tipoRequerimento.DataAlteracao = DateTime.Now;
+
+                var usuario = await GetUsuarioLogadoAsync();
+                if (usuario == null)
+                    return StatusCode(500, "Usuário logado não encontrado.");
+
+                tipoRequerimento.IdUsuarioAtualizacao = usuario.Id;
 
 
+                _context.TiposRequerimento.Update(tipoRequerimento);
+                await _context.SaveChangesAsync();
 
+                return Ok("Tipo de requerimento excluido com sucesso.");
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Erro ao excluir tipo de requerimento: {ex.Message}");
+            }
+        }
     }
 }
