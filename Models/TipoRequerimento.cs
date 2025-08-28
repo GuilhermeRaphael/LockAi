@@ -15,10 +15,10 @@ namespace LockAi.Models
         public SituacaoTipoRequerimentoEnum Situacao { get; set; }
         public DateTime DataInclusao { get; set; }
         public int IdUsuarioInclusao { get; set; } // FK
-        public Usuario? UsuarioInclusao { get; set; } // navegação opcional
+        public Usuario? UsuarioInclusao { get; set; } // navegação 
         public DateTime DataAlteracao { get; set; }
-        public int IdUsuarioAtualizacao { get; set; }
-        public Usuario? UsuarioAtualizacao { get; set; }
-        public ICollection<Requerimento> Requerimentos { get; set; }
+        public int IdUsuarioAtualizacao { get; set; } // FK
+        public Usuario? UsuarioAtualizacao { get; set; } // navegação 
+        public ICollection<Requerimento>? Requerimentos { get; set; }
     }
 }

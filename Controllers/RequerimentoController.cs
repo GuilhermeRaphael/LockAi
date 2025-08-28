@@ -18,7 +18,7 @@ namespace LockAi.Controllers
         }
 
         // Listar todos os requerimentos com o usuário solicitante
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetRequerimentos()
         {
             try
@@ -64,7 +64,12 @@ namespace LockAi.Controllers
                 if (novoRequerimento == null)
                     return BadRequest("Dados inválidos.");
 
+                novoRequerimento.Momento = DateTime.Now;
                 novoRequerimento.Situacao = SituacaoRequerimentoEnum.EmAnalise;
+                novoRequerimento.DataAtualizacao = DateTime.Now;
+
+                if (novoRequerimento.UsuarioId == null || novoRequerimento.TipoRequerimentoId == null)
+                    return BadRequest($"Os campos de Id usuario e tipo requerimento devem ser preenchidos.");
 
                 _context.Requerimentos.Add(novoRequerimento);
                 await _context.SaveChangesAsync();

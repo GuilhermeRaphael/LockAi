@@ -88,7 +88,7 @@ namespace LockAi.Controllers
 
         private async Task<Usuario> GetUsuarioLogadoAsync()
         {
-            return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto
+            return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto, mudar com a implementação do JWT
         }
 
 
