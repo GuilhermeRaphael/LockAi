@@ -7,7 +7,8 @@ namespace LockAi.Dtos
 {
     public class AlterarValorDtos
     {
-        public float Valor { get; set; }
         public int IdUsuario { get; set; } 
+        public float Valor { get; set; }
+        
     }
 }

@@ -10,15 +10,15 @@ namespace LockAi.Models
     {
         public int Id { get; set; }
         public DateTime Momento { get; set; }
-        public int IdTipoRequerimento { get; set; }
-
         public int IdLocacao { get; set; }
         public string Observacao { get; set; }
         public SituacaoRequerimentoEnum Situacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public int IdUsuarioAtualizacao { get; set; }
+        public int IdUsuarioAtualizacao { get; set; } // utilizar a mesma sintxe de TpRequerimento
 
         public int UsuarioId { get; set; } // chave estrangeira correta
-        public Usuario Usuario { get; set; } // navegação
+        public Usuario? Usuario { get; set; } // navegação
+        public int TipoRequerimentoId { get; set; }
+        public TipoRequerimento? TipoRequerimento { get; set; } //navegação
     }
  }
