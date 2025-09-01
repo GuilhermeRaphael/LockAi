@@ -18,9 +18,15 @@ namespace LockAi.Models
         public int PrazoPagamento { get; set; }
         public SituacaoPlanoLocacao Situacao { get; set; }
         public DateTime DtInclusao { get; set; }
-        public int IdUsuarioInclusao { get; set; }
+        public int IdUsuarioInclusao { get; set; } // FK
+        public Usuario? UsuarioInclusao { get; set; } // Navegação
         public DateTime DtAtualizacao { get; set; }
-        public int IdUsuarioAtualizacao { get; set; }
-        
+        public int IdUsuarioAtualizacao { get; set; } // FK
+        public Usuario? UsuarioAtualizacao { get; set; } // Navegacao
+        public int UsuarioId { get; set; } //chave estrangeira
+        public Usuario? Usuario { get; set; } // Navegação
+        public ICollection<PlanoLocacaoObjeto>? PlanoLocacaoObjetos { get; set; }
+        public ICollection<PropostaLocacao>? PropostaLocacao { get; set; }
+
     }
 }
