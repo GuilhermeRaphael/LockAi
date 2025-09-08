@@ -8,6 +8,7 @@ namespace LockAi.Models
 {
     public class PlanoLocacaoObjeto
     {
+        public int Id { get; set; }
         public int IdPlanoLocacao { get; set; }//chave estrangeira
         public PlanoLocacao PlanoLocacao { get; set; }
         public int IdTipoObjeto { get; set; }

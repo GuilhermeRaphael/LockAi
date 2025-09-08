@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LockAi.Models.Enuns;
 
-namespace LockAi.Models.Enuns
+
+namespace LockAi.Models
 {
     public class PropostaLocacao
     {

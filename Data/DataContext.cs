@@ -59,6 +59,14 @@ namespace LockAi.Data
                 new Requerimento { Id = 1, Momento = new DateTime(2025, 8, 26, 10, 0, 0), TipoRequerimentoId = 1, IdLocacao = 101, Observacao = "Solicitação enviada pelo aluno João", Situacao = SituacaoRequerimentoEnum.EmAnalise, DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0), UsuarioId = 3 }
             );
 
+            modelBuilder.Entity<PlanoLocacao>().HasData
+            (
+                new PlanoLocacao
+                {
+                     Id = 1, Nome = "Plano Mensal Armário", DtInicio = new DateTime(2025, 9, 8, 0, 0, 0), DtFim =new DateTime(2025, 10, 8, 23, 59, 59), Valor = 59.90f, InicioLocacao = "08:00",  FimLocacao = "22:00", PrazoPagamento = 5,  Situacao = SituacaoPlanoLocacao.Ativo, DtInclusao =new DateTime(2025, 9, 8, 0, 0, 0),  IdUsuarioInclusao = 1, DtAtualizacao =new DateTime(2025, 9, 8, 0, 0, 0),  IdUsuarioAtualizacao = 1, UsuarioId = 1
+                }
+            );
+
             modelBuilder.Entity<Usuario>()
             .HasOne(u => u.RepresentanteLegal)
             .WithMany(r => r.Usuarios)
@@ -85,7 +93,21 @@ namespace LockAi.Data
             modelBuilder.Entity<PlanoLocacao>()
             .HasOne(u => u.Usuario)
             .WithMany(p => p.PlanosLocacao)
-            .HasForeignKey(u => u.UsuarioId);
+            .HasForeignKey(u => u.UsuarioId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<PlanoLocacao>()
+            .HasOne(p => p.UsuarioInclusao)
+            .WithMany()
+            .HasForeignKey(p => p.IdUsuarioInclusao)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PlanoLocacao>()
+            .HasOne(p => p.UsuarioAtualizacao)
+            .WithMany()
+            .HasForeignKey(p => p.IdUsuarioAtualizacao)
+            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PlanoLocacaoObjeto>()
             .HasOne(p => p.PlanoLocacao)
