@@ -22,6 +22,8 @@ namespace LockAi.Data
         public DbSet<Requerimento> Requerimentos { get; set; }
         public DbSet<TipoRequerimento> TiposRequerimento { get; set; }
         public DbSet<Objeto> Objetos { get; set; }
+        public DbSet<PlanoLocacao> PlanoLocacao { get; set; }
+        public DbSet<PropostaLocacao> PropostasLocacao { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,12 +53,49 @@ namespace LockAi.Data
             (
                 new TipoRequerimento() { Id = 1, Nome = "Trancamento de Matrícula", Descricao = "Solicitação para trancar matrícula do semestre", Valor = 0f, Situacao = SituacaoTipoRequerimentoEnum.EmAnalise, DataInclusao = new DateTime(2025, 8, 26), IdUsuarioInclusao = 1, DataAlteracao = new DateTime(2025, 8, 26), IdUsuarioAtualizacao = 1 }
             );
-            
+
 
             modelBuilder.Entity<Requerimento>().HasData
             (
                 new Requerimento { Id = 1, Momento = new DateTime(2025, 8, 26, 10, 0, 0), TipoRequerimentoId = 1, IdLocacao = 101, Observacao = "Solicitação enviada pelo aluno João", Situacao = SituacaoRequerimentoEnum.EmAnalise, DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0), UsuarioId = 3 }
             );
+
+             modelBuilder.Entity<Objeto>().HasData(
+            new Objeto 
+            { 
+            Id = 1, 
+            Nome = "Armário A-01", 
+            Descricao = "Armário de Metal Padrão", 
+            IdTipoObjeto = 1, 
+            LocalidadePrimaria = "Bloco A", 
+            LocalidadeSecundaria = "Corredor 1",
+            LocalidadeTercearia = "Perto da escada", 
+            Situacao = SituacaoObjetoEnum.Disponível,
+            DtInclusao = new DateTime(2025, 1, 1), 
+            IdUsuarioInclusao = 1, 
+            DtAtualizao = new DateTime(2025, 1, 1), 
+            IdUsuarioAtualizacao = 1
+    }
+);
+
+            modelBuilder.Entity<PlanoLocacao>().HasData(
+            new PlanoLocacao
+            {
+            Id = 1, 
+            Nome = "Plano Anual", 
+            DtInicio = new DateTime(2025, 1, 1),
+            DtFim = new DateTime(2025, 12, 31), 
+            Valor = 50.00f, 
+            InicioLocacao = "08:00",
+            FimLocacao = "18:00", 
+            PrazoPagamento = 30, 
+            Situacao = SituacaoPlanoLocacao.Ativo,
+            DtInclusao = new DateTime(2025, 1, 1), 
+            IdUsuarioInclusao = 1, 
+            DtAtualizacao = new DateTime(2025, 1, 1), 
+            IdUsuarioAtualizacao = 1
+    }
+);
 
             modelBuilder.Entity<Usuario>()
             .HasOne(u => u.RepresentanteLegal)
@@ -80,6 +119,16 @@ namespace LockAi.Data
             .HasOne(p => p.TipoRequerimento)
             .WithMany(u => u.Requerimentos)
             .HasForeignKey(p => p.TipoRequerimentoId);
+
+            modelBuilder.Entity<PropostaLocacao>()
+            .HasOne(p => p.Usuario)
+            .WithMany(u => u.PropostasLocacao)
+            .HasForeignKey(p => p.IdUsuario);
+
+            modelBuilder.Entity<PropostaLocacao>()
+            .HasOne(p => p.Objeto)
+            .WithMany(o => o.PropostasLocacao)
+            .HasForeignKey(p => p.IdObjeto); 
         }
     }
 }

@@ -6,6 +6,7 @@ namespace LockAi.Models.Enuns
         Locado = 2,
         Revisao = 3,
         Reservado = 4,
-        Desativado = 5
+        Desativado = 5,
+        Disponível = 6
     }
 }

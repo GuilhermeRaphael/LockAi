@@ -4,6 +4,7 @@ using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250831012024_CriacaoFinalDasTabelasDeLocacao")]
+    partial class CriacaoFinalDasTabelasDeLocacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,23 +74,6 @@ namespace LockAi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Objetos");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Descricao = "Armário de Metal Padrão",
-                            DtAtualizao = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtInclusao = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IdTipoObjeto = 1,
-                            IdUsuarioAtualizacao = 1,
-                            IdUsuarioInclusao = 1,
-                            LocalidadePrimaria = "Bloco A",
-                            LocalidadeSecundaria = "Corredor 1",
-                            LocalidadeTercearia = "Perto da escada",
-                            Nome = "Armário A-01",
-                            Situacao = 6
-                        });
                 });
 
             modelBuilder.Entity("LockAi.Models.PlanoLocacao", b =>
@@ -140,24 +126,6 @@ namespace LockAi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PlanoLocacao");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DtAtualizacao = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtFim = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtInclusao = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtInicio = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FimLocacao = "18:00",
-                            IdUsuarioAtualizacao = 1,
-                            IdUsuarioInclusao = 1,
-                            InicioLocacao = "08:00",
-                            Nome = "Plano Anual",
-                            PrazoPagamento = 30,
-                            Situacao = 1,
-                            Valor = 50f
-                        });
                 });
 
             modelBuilder.Entity("LockAi.Models.PropostaLocacao", b =>
