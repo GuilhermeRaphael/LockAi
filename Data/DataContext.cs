@@ -22,6 +22,7 @@ namespace LockAi.Data
         public DbSet<Requerimento> Requerimentos { get; set; }
         public DbSet<TipoRequerimento> TiposRequerimento { get; set; }
         public DbSet<Objeto> Objetos { get; set; }
+        public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,11 +52,19 @@ namespace LockAi.Data
             (
                 new TipoRequerimento() { Id = 1, Nome = "Trancamento de Matrícula", Descricao = "Solicitação para trancar matrícula do semestre", Valor = 0f, Situacao = SituacaoTipoRequerimentoEnum.EmAnalise, DataInclusao = new DateTime(2025, 8, 26), IdUsuarioInclusao = 1, DataAlteracao = new DateTime(2025, 8, 26), IdUsuarioAtualizacao = 1 }
             );
-            
+
 
             modelBuilder.Entity<Requerimento>().HasData
             (
                 new Requerimento { Id = 1, Momento = new DateTime(2025, 8, 26, 10, 0, 0), TipoRequerimentoId = 1, IdLocacao = 101, Observacao = "Solicitação enviada pelo aluno João", Situacao = SituacaoRequerimentoEnum.EmAnalise, DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0), UsuarioId = 3 }
+            );
+
+            modelBuilder.Entity<PlanoLocacao>().HasData
+            (
+                new PlanoLocacao
+                {
+                     Id = 1, Nome = "Plano Mensal Armário", DtInicio = new DateTime(2025, 9, 8, 0, 0, 0), DtFim =new DateTime(2025, 10, 8, 23, 59, 59), Valor = 59.90f, InicioLocacao = "08:00",  FimLocacao = "22:00", PrazoPagamento = 5,  Situacao = SituacaoPlanoLocacao.Ativo, DtInclusao =new DateTime(2025, 9, 8, 0, 0, 0),  IdUsuarioInclusao = 1, DtAtualizacao =new DateTime(2025, 9, 8, 0, 0, 0),  IdUsuarioAtualizacao = 1, UsuarioId = 1
+                }
             );
 
             modelBuilder.Entity<Usuario>()
@@ -78,8 +87,32 @@ namespace LockAi.Data
 
             modelBuilder.Entity<Requerimento>()
             .HasOne(p => p.TipoRequerimento)
-            .WithMany(u => u.Requerimentos)
+            .WithMany(u => u.Requerimentos) 
             .HasForeignKey(p => p.TipoRequerimentoId);
+
+            modelBuilder.Entity<PlanoLocacao>()
+            .HasOne(u => u.Usuario)
+            .WithMany(p => p.PlanosLocacao)
+            .HasForeignKey(u => u.UsuarioId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<PlanoLocacao>()
+            .HasOne(p => p.UsuarioInclusao)
+            .WithMany()
+            .HasForeignKey(p => p.IdUsuarioInclusao)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PlanoLocacao>()
+            .HasOne(p => p.UsuarioAtualizacao)
+            .WithMany()
+            .HasForeignKey(p => p.IdUsuarioAtualizacao)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PlanoLocacaoObjeto>()
+            .HasOne(p => p.PlanoLocacao)
+            .WithMany(o => o.PlanoLocacaoObjetos)
+            .HasForeignKey(p => p.IdPlanoLocacao);
         }
     }
 }

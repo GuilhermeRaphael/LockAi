@@ -14,7 +14,7 @@ namespace LockAi.Models
         public string Observacao { get; set; }
         public SituacaoRequerimentoEnum Situacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public int IdUsuarioAtualizacao { get; set; } // utilizar a mesma sintxe de TpRequerimento
+        public int IdUsuarioAtualizacao { get; set; } // utilizar a mesma sintxe de TipRequerimento
 
         public int UsuarioId { get; set; } // chave estrangeira correta
         public Usuario? Usuario { get; set; } // navegação
