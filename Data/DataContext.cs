@@ -26,95 +26,137 @@ namespace LockAi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TipoUsuario>().HasData
-            (
+            // Tipos de usuário
+            modelBuilder.Entity<TipoUsuario>().HasData(
                 new TipoUsuario { Id = 1, Nome = "Usuario" },
                 new TipoUsuario { Id = 2, Nome = "Gestor" },
                 new TipoUsuario { Id = 3, Nome = "Financeiro" }
             );
 
-
-            modelBuilder.Entity<Usuario>().HasData
-            (
-                new Usuario() { Id = 1, Nome = "Admin", Cpf = "46284605874", Login = "ADM", Email = "adm@gmail.com", DtNascimento = new DateTime(2006, 4, 7), Telefone = "11971949976", TipoUsuarioId = 2, Senha = "*123456HAS*", Situacao = SituacaoUsuario.Ativo, DtSituacao = new DateTime(2025, 7, 10), IdUsuarioSituacao = 1, RepresentanteLegalId = null },
-                new Usuario() { Id = 3, Nome = "João Silva", Cpf = "12345678900", Login = "joaos", Email = "joao.silva@example.com", DtNascimento = new DateTime(2010, 5, 15), Telefone = "11987654321", TipoUsuarioId = 1, Senha = "*senha123*", Situacao = SituacaoUsuario.Ativo, DtSituacao = new DateTime(2025, 7, 14), IdUsuarioSituacao = 1, RepresentanteLegalId = 1 }
-
+            // Representantes legais
+            modelBuilder.Entity<RepresentanteLegal>().HasData(
+                new RepresentanteLegal { Id = 1, Nome = "Mariana Alves", Cpf = "12345678901", Telefone = "11912345678", Email = "mariana.alves@example.com" },
+                new RepresentanteLegal { Id = 2, Nome = "Carlos Henrique", Cpf = "98765432100", Telefone = "21998765432", Email = "carlos.henrique@example.com" },
+                new RepresentanteLegal { Id = 3, Nome = "Fernanda Costa", Cpf = "45678912333", Telefone = "31934567890", Email = "fernanda.costa@example.com" }
             );
 
-            modelBuilder.Entity<RepresentanteLegal>().HasData
-           (
-               new RepresentanteLegal() { Id = 1, Nome = "Mariana Alves", Cpf = "12345678901", Telefone = "11912345678", Email = "mariana.alves@example.com" },
-               new RepresentanteLegal() { Id = 2, Nome = "Carlos Henrique", Cpf = "98765432100", Telefone = "21998765432", Email = "carlos.henrique@example.com" },
-               new RepresentanteLegal() { Id = 3, Nome = "Fernanda Costa", Cpf = "45678912333", Telefone = "31934567890", Email = "fernanda.costa@example.com" }
-           );
-
-            modelBuilder.Entity<TipoRequerimento>().HasData
-            (
-                new TipoRequerimento() { Id = 1, Nome = "Trancamento de Matrícula", Descricao = "Solicitação para trancar matrícula do semestre", Valor = 0f, Situacao = SituacaoTipoRequerimentoEnum.EmAnalise, DataInclusao = new DateTime(2025, 8, 26), IdUsuarioInclusao = 1, DataAlteracao = new DateTime(2025, 8, 26), IdUsuarioAtualizacao = 1 }
-            );
-
-
-            modelBuilder.Entity<Requerimento>().HasData
-            (
-                new Requerimento { Id = 1, Momento = new DateTime(2025, 8, 26, 10, 0, 0), TipoRequerimentoId = 1, IdLocacao = 101, Observacao = "Solicitação enviada pelo aluno João", Situacao = SituacaoRequerimentoEnum.EmAnalise, DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0), UsuarioId = 3 }
-            );
-
-            modelBuilder.Entity<PlanoLocacao>().HasData
-            (
-                new PlanoLocacao
+            // Usuário técnico com ID 1 para referência nas FKs
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario
                 {
-                     Id = 1, Nome = "Plano Mensal Armário", DtInicio = new DateTime(2025, 9, 8, 0, 0, 0), DtFim =new DateTime(2025, 10, 8, 23, 59, 59), Valor = 59.90f, InicioLocacao = "08:00",  FimLocacao = "22:00", PrazoPagamento = 5,  Situacao = SituacaoPlanoLocacao.Ativo, DtInclusao =new DateTime(2025, 9, 8, 0, 0, 0),  IdUsuarioInclusao = 1, DtAtualizacao =new DateTime(2025, 9, 8, 0, 0, 0),  IdUsuarioAtualizacao = 1, UsuarioId = 1
+                    Id = 1,
+                    Nome = "Usuário do Sistema",
+                    Cpf = "00000000000",
+                    Login = "sistema",
+                    Email = "sistema@lockai.com",
+                    DtNascimento = new DateTime(1990, 1, 1),
+                    Telefone = "0000000000",
+                    TipoUsuarioId = 1,
+                    Senha = "senha123",
+                    Situacao = SituacaoUsuario.Ativo,
+                    DtSituacao = DateTime.Now,
+                    IdUsuarioSituacao = 1,
+                    RepresentanteLegalId = 1
                 }
             );
 
-            modelBuilder.Entity<Usuario>()
-            .HasOne(u => u.RepresentanteLegal)
-            .WithMany(r => r.Usuarios)
-            .HasForeignKey(u => u.RepresentanteLegalId);
+            // Tipo de requerimento referenciando o usuário técnico
+            modelBuilder.Entity<TipoRequerimento>().HasData(
+                new TipoRequerimento
+                {
+                    Id = 1,
+                    Nome = "Trancamento de Matrícula",
+                    Descricao = "Solicitação para trancar matrícula do semestre",
+                    Valor = 0f,
+                    Situacao = SituacaoTipoRequerimentoEnum.EmAnalise,
+                    DataInclusao = new DateTime(2025, 8, 26),
+                    IdUsuarioInclusao = 1,
+                    DataAlteracao = new DateTime(2025, 8, 26),
+                    IdUsuarioAtualizacao = 1
+                }
+            );
 
-            modelBuilder.Entity<UsuarioImagem>()
-            .HasKey(ui => ui.IdImagem);
+            // Requerimento referenciando o usuário técnico
+            modelBuilder.Entity<Requerimento>().HasData(
+                new Requerimento
+                {
+                    Id = 1,
+                    Momento = new DateTime(2025, 8, 26, 10, 0, 0),
+                    TipoRequerimentoId = 1,
+                    IdLocacao = 101,
+                    Observacao = "Solicitação enviada pelo aluno João",
+                    Situacao = SituacaoRequerimentoEnum.EmAnalise,
+                    DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0),
+                    UsuarioId = 1
+                }
+            );
+
+            // Plano de locação referenciando o usuário técnico
+            modelBuilder.Entity<PlanoLocacao>().HasData(
+                new PlanoLocacao
+                {
+                    Id = 1,
+                    Nome = "Plano Mensal Armário",
+                    DtInicio = new DateTime(2025, 9, 8),
+                    DtFim = new DateTime(2025, 10, 8, 23, 59, 59),
+                    Valor = 59.90f,
+                    InicioLocacao = "08:00",
+                    FimLocacao = "22:00",
+                    PrazoPagamento = 5,
+                    Situacao = SituacaoPlanoLocacao.Ativo,
+                    DtInclusao = new DateTime(2025, 9, 8),
+                    IdUsuarioInclusao = 1,
+                    DtAtualizacao = new DateTime(2025, 9, 8),
+                    IdUsuarioAtualizacao = 1,
+                    UsuarioId = 1
+                }
+            );
+
+            // Relacionamentos
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.RepresentanteLegal)
+                .WithMany(r => r.Usuarios)
+                .HasForeignKey(u => u.RepresentanteLegalId);
+
+            modelBuilder.Entity<UsuarioImagem>().HasKey(ui => ui.IdImagem);
 
             modelBuilder.Entity<Usuario>()
-            .HasOne(u => u.TipoUsuario)
-            .WithMany(t => t.Usuarios)
-            .HasForeignKey(u => u.TipoUsuarioId);
+                .HasOne(u => u.TipoUsuario)
+                .WithMany(t => t.Usuarios)
+                .HasForeignKey(u => u.TipoUsuarioId);
 
             modelBuilder.Entity<Requerimento>()
-            .HasOne(r => r.Usuario)
-            .WithMany(u => u.Requerimentos)
-            .HasForeignKey(r => r.UsuarioId);
+                .HasOne(r => r.Usuario)
+                .WithMany(u => u.Requerimentos)
+                .HasForeignKey(r => r.UsuarioId);
 
             modelBuilder.Entity<Requerimento>()
-            .HasOne(p => p.TipoRequerimento)
-            .WithMany(u => u.Requerimentos) 
-            .HasForeignKey(p => p.TipoRequerimentoId);
+                .HasOne(p => p.TipoRequerimento)
+                .WithMany(u => u.Requerimentos)
+                .HasForeignKey(p => p.TipoRequerimentoId);
 
             modelBuilder.Entity<PlanoLocacao>()
-            .HasOne(u => u.Usuario)
-            .WithMany(p => p.PlanosLocacao)
-            .HasForeignKey(u => u.UsuarioId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-
-            modelBuilder.Entity<PlanoLocacao>()
-            .HasOne(p => p.UsuarioInclusao)
-            .WithMany()
-            .HasForeignKey(p => p.IdUsuarioInclusao)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(u => u.Usuario)
+                .WithMany(p => p.PlanosLocacao)
+                .HasForeignKey(u => u.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PlanoLocacao>()
-            .HasOne(p => p.UsuarioAtualizacao)
-            .WithMany()
-            .HasForeignKey(p => p.IdUsuarioAtualizacao)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(p => p.UsuarioInclusao)
+                .WithMany()
+                .HasForeignKey(p => p.IdUsuarioInclusao)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PlanoLocacao>()
+                .HasOne(p => p.UsuarioAtualizacao)
+                .WithMany()
+                .HasForeignKey(p => p.IdUsuarioAtualizacao)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PlanoLocacaoObjeto>()
-            .HasOne(p => p.PlanoLocacao)
-            .WithMany(o => o.PlanoLocacaoObjetos)
-            .HasForeignKey(p => p.IdPlanoLocacao);
+                .HasOne(p => p.PlanoLocacao)
+                .WithMany(o => o.PlanoLocacaoObjetos)
+                .HasForeignKey(p => p.IdPlanoLocacao);
         }
     }
 }
-
-

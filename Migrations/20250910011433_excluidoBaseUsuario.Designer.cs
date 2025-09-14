@@ -4,6 +4,7 @@ using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250910011433_excluidoBaseUsuario")]
+    partial class excluidoBaseUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -362,7 +365,7 @@ namespace LockAi.Migrations
                             Observacao = "Solicitação enviada pelo aluno João",
                             Situacao = 3,
                             TipoRequerimentoId = 1,
-                            UsuarioId = 1
+                            UsuarioId = 3
                         });
                 });
 
@@ -552,24 +555,6 @@ namespace LockAi.Migrations
                     b.HasIndex("TipoUsuarioId");
 
                     b.ToTable("Usuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Cpf = "00000000000",
-                            DtNascimento = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtSituacao = new DateTime(2025, 9, 14, 11, 12, 52, 304, DateTimeKind.Local).AddTicks(9662),
-                            Email = "sistema@lockai.com",
-                            IdUsuarioSituacao = 1,
-                            Login = "sistema",
-                            Nome = "Usuário do Sistema",
-                            RepresentanteLegalId = 1,
-                            Senha = "senha123",
-                            Situacao = 1,
-                            Telefone = "0000000000",
-                            TipoUsuarioId = 1
-                        });
                 });
 
             modelBuilder.Entity("LockAi.Models.UsuarioImagem", b =>
