@@ -22,6 +22,7 @@ namespace LockAi.Data
         public DbSet<Requerimento> Requerimentos { get; set; }
         public DbSet<TipoRequerimento> TiposRequerimento { get; set; }
         public DbSet<Objeto> Objetos { get; set; }
+        public DbSet<TipoObjeto> TiposObjeto { get; set; }
         public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
         public DbSet<PlanoLocacaoObjeto> PlanosLocacoesObjeto { get; set; }
 

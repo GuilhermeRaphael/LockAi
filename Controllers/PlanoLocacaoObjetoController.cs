@@ -28,7 +28,7 @@ namespace LockAi.Controllers
                 PlanoLocacaoObjeto planoLocacaoObjeto = await _context.PlanosLocacoesObjeto.FirstOrDefaultAsync(r => r.IdPlanoLocacao == idPlano);
 
                 if (planoLocacaoObjeto == null)
-                    return NotFound("Plano locação não encontrado.");
+                    return NotFound("Plano Locação de objeto não encontrado.");
 
                 return Ok(planoLocacaoObjeto);
             }
@@ -37,5 +37,7 @@ namespace LockAi.Controllers
                 return BadRequest(ex.Message);
             }
         } 
+
+        
     }
 }
