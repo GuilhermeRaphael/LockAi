@@ -157,11 +157,16 @@ namespace LockAi.Data
 
 
             modelBuilder.Entity<PlanoLocacaoObjeto>()
-           .HasKey(po => new { po.IdPlanoLocacao, po.IdTipoObjeto });
+                .HasKey(po => new { po.IdPlanoLocacao, po.IdTipoObjeto });
             /*modelBuilder.Entity<PlanoLocacaoObjeto>()
                 .HasOne(p => p.PlanoLocacao)
                 .WithMany(o => o.PlanoLocacaoObjetos)
                 .HasForeignKey(p => p.IdPlanoLocacao); */
+            
+            modelBuilder.Entity<Objeto>()
+                .HasOne(u => u.TipoObjeto)
+                .WithMany(r => r.Objeto)
+                .HasForeignKey(p => p.IdTipoObjeto);
         }
     }
 }

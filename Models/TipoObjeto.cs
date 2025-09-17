@@ -18,5 +18,6 @@ namespace LockAi.Models
         public int IdUsuarioAtualizacao { get; set; } // Fk
         public Usuario? UsuarioAtualizacao { get; set; } //navegação
         public ICollection<PlanoLocacaoObjeto>? PlanoLocacaoObjetos { get; set; }
+        public ICollection<Objeto> Objeto { get; set; }
     }
 }
