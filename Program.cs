@@ -17,7 +17,7 @@ builder.Services.AddOpenApi();
 
 // Conexão com banco de dados
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoSomee")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoLocal")));
 
 // CORS
 builder.Services.AddCors(options =>

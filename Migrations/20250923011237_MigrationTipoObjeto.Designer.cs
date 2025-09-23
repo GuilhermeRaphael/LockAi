@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250908191007_AddPlanoLocacao")]
-    partial class AddPlanoLocacao
+    [Migration("20250923011237_MigrationTipoObjeto")]
+    partial class MigrationTipoObjeto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -365,7 +365,7 @@ namespace LockAi.Migrations
                             Observacao = "Solicitação enviada pelo aluno João",
                             Situacao = 3,
                             TipoRequerimentoId = 1,
-                            UsuarioId = 3
+                            UsuarioId = 1
                         });
                 });
 
@@ -560,32 +560,17 @@ namespace LockAi.Migrations
                         new
                         {
                             Id = 1,
-                            Cpf = "46284605874",
-                            DtNascimento = new DateTime(2006, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtSituacao = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "adm@gmail.com",
+                            Cpf = "00000000000",
+                            DtNascimento = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DtSituacao = new DateTime(2025, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "sistema@lockai.com",
                             IdUsuarioSituacao = 1,
-                            Login = "ADM",
-                            Nome = "Admin",
-                            Senha = "*123456HAS*",
-                            Situacao = 1,
-                            Telefone = "11971949976",
-                            TipoUsuarioId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Cpf = "12345678900",
-                            DtNascimento = new DateTime(2010, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtSituacao = new DateTime(2025, 7, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "joao.silva@example.com",
-                            IdUsuarioSituacao = 1,
-                            Login = "joaos",
-                            Nome = "João Silva",
+                            Login = "sistema",
+                            Nome = "Usuário do Sistema",
                             RepresentanteLegalId = 1,
-                            Senha = "*senha123*",
+                            Senha = "senha123",
                             Situacao = 1,
-                            Telefone = "11987654321",
+                            Telefone = "0000000000",
                             TipoUsuarioId = 1
                         });
                 });

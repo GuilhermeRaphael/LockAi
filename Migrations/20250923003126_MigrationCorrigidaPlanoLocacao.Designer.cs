@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250914141253_CorrigidoEstruturaData")]
-    partial class CorrigidoEstruturaData
+    [Migration("20250923003126_MigrationCorrigidaPlanoLocacao")]
+    partial class MigrationCorrigidaPlanoLocacao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -562,7 +562,7 @@ namespace LockAi.Migrations
                             Id = 1,
                             Cpf = "00000000000",
                             DtNascimento = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtSituacao = new DateTime(2025, 9, 14, 11, 12, 52, 304, DateTimeKind.Local).AddTicks(9662),
+                            DtSituacao = new DateTime(2025, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sistema@lockai.com",
                             IdUsuarioSituacao = 1,
                             Login = "sistema",

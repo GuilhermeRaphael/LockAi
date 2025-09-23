@@ -23,6 +23,7 @@ namespace LockAi.Data
         public DbSet<TipoRequerimento> TiposRequerimento { get; set; }
         public DbSet<Objeto> Objetos { get; set; }
         public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
+        public DbSet<TipoObjeto> TipoObjeto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,7 +55,7 @@ namespace LockAi.Data
                     TipoUsuarioId = 1,
                     Senha = "senha123",
                     Situacao = SituacaoUsuario.Ativo,
-                    DtSituacao = DateTime.Now,
+                    DtSituacao = new DateTime(2025, 09, 09),
                     IdUsuarioSituacao = 1,
                     RepresentanteLegalId = 1
                 }
