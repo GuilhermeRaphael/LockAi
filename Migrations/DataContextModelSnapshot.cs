@@ -571,7 +571,7 @@ namespace LockAi.Migrations
                             Id = 1,
                             Cpf = "00000000000",
                             DtNascimento = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtSituacao = new DateTime(2025, 9, 18, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            DtSituacao = new DateTime(2025, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sistema@lockai.com",
                             IdUsuarioSituacao = 1,
                             Login = "sistema",

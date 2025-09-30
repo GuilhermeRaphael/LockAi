@@ -82,10 +82,12 @@ namespace LockAi.Controllers
             catch (System.Exception ex)
             {
                 return BadRequest($"Erro ao buscar tipo objeto: {ex.Message}");
+
             }
         }
 
         [HttpDelete("{id}")]
+
         public async Task<IActionResult> ExcluirTipoObjeto(int id)
         {
             try
@@ -116,6 +118,5 @@ namespace LockAi.Controllers
                 return StatusCode(500, $"Erro ao alterar situação do tipo de objeto. {ex.Message}");
             }
         }
-
     }
 }

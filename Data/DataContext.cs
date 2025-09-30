@@ -27,17 +27,6 @@ namespace LockAi.Data
         public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
         public DbSet<PlanoLocacaoObjeto> PlanosLocacoesObjeto { get; set; }
 
-        
-
-
-             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.ConfigureWarnings(warnings =>
-                warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-        }
-
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Tipos de usuário
@@ -68,7 +57,7 @@ namespace LockAi.Data
                     TipoUsuarioId = 1,
                     Senha = "senha123",
                     Situacao = SituacaoUsuario.Ativo,
-                    DtSituacao = new DateTime(2025, 9, 18, 16, 0, 0),
+                    DtSituacao = new DateTime(2025, 09, 09),
                     IdUsuarioSituacao = 1,
                     RepresentanteLegalId = 1
                 }
