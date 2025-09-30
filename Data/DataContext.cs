@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LockAi.Models;
 using LockAi.Models.Enuns;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace LockAi.Data
 {
@@ -25,6 +26,17 @@ namespace LockAi.Data
         public DbSet<TipoObjeto> TiposObjeto { get; set; }
         public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
         public DbSet<PlanoLocacaoObjeto> PlanosLocacoesObjeto { get; set; }
+
+        
+
+
+             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.ConfigureWarnings(warnings =>
+                warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,7 +68,7 @@ namespace LockAi.Data
                     TipoUsuarioId = 1,
                     Senha = "senha123",
                     Situacao = SituacaoUsuario.Ativo,
-                    DtSituacao = DateTime.Now,
+                    DtSituacao = new DateTime(2025, 9, 18, 16, 0, 0),
                     IdUsuarioSituacao = 1,
                     RepresentanteLegalId = 1
                 }
@@ -162,7 +174,7 @@ namespace LockAi.Data
                 .HasOne(p => p.PlanoLocacao)
                 .WithMany(o => o.PlanoLocacaoObjetos)
                 .HasForeignKey(p => p.IdPlanoLocacao); */
-            
+
             modelBuilder.Entity<Objeto>()
                 .HasOne(u => u.TipoObjeto)
                 .WithMany(r => r.Objeto)
