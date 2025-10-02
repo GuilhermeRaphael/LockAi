@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LockAi.Models;
 using LockAi.Models.Enuns;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace LockAi.Data
 {
@@ -22,8 +23,9 @@ namespace LockAi.Data
         public DbSet<Requerimento> Requerimentos { get; set; }
         public DbSet<TipoRequerimento> TiposRequerimento { get; set; }
         public DbSet<Objeto> Objetos { get; set; }
+        public DbSet<TipoObjeto> TiposObjeto { get; set; }
         public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
-        public DbSet<TipoObjeto> TipoObjeto { get; set; }
+        public DbSet<PlanoLocacaoObjeto> PlanosLocacoesObjeto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -154,10 +156,31 @@ namespace LockAi.Data
                 .HasForeignKey(p => p.IdUsuarioAtualizacao)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
             modelBuilder.Entity<PlanoLocacaoObjeto>()
+                .HasKey(po => new { po.IdPlanoLocacao, po.IdTipoObjeto });
+            /*modelBuilder.Entity<PlanoLocacaoObjeto>()
                 .HasOne(p => p.PlanoLocacao)
                 .WithMany(o => o.PlanoLocacaoObjetos)
-                .HasForeignKey(p => p.IdPlanoLocacao);
+                .HasForeignKey(p => p.IdPlanoLocacao); */
+
+
+            modelBuilder.Entity<PlanoLocacaoObjeto>()
+                .HasOne(po => po.PlanoLocacao)
+                .WithMany(p => p.PlanoLocacaoObjetos)
+                .HasForeignKey(po => po.IdPlanoLocacao)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PlanoLocacaoObjeto>()
+                .HasOne(po => po.TipoObjeto)
+                .WithMany(t => t.PlanoLocacaoObjetos)
+                .HasForeignKey(po => po.IdTipoObjeto)
+                .OnDelete(DeleteBehavior.Restrict);
+                
+            modelBuilder.Entity<Objeto>()
+                .HasOne(u => u.TipoObjeto)
+                .WithMany(r => r.Objeto)
+                .HasForeignKey(p => p.IdTipoObjeto);
         }
     }
 }

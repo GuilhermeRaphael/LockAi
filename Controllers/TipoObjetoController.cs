@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using LockAi.Data;
 using LockAi.Models;
+using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace LockAi.Controllers
 {
@@ -21,96 +21,102 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> ConsultarTipoObjeto()
+        [HttpPost]
+        public async Task<IActionResult> AddTipoObjeto(TipoObjeto novoTipoObjeto)
         {
-            var tipoObjeto = await _context.TipoObjeto.ToListAsync();
-            return Ok(tipoObjeto);
+            try
+            {
+                novoTipoObjeto.Situacao = SituacaoTipoObjetoEnum.Pendente;
+                novoTipoObjeto.DtInclusao = DateTime.Now;
+
+                var usuario = await GetUsuarioLogadoAsync();
+                novoTipoObjeto.IdUsuarioInclusao = usuario.Id;
+
+                _context.TiposObjeto.Add(novoTipoObjeto);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetTipoObjetoById), new { id = novoTipoObjeto.Id }, novoTipoObjeto);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Erro ao adocionar tipo de objeto: {ex.Message}");
+            }
+        }
+
+        private async Task<Usuario> GetUsuarioLogadoAsync()
+        {
+            return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto, mudar com a implementação do JWT
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPorIdTipoObjeto(int id)
+        public async Task<IActionResult> GetTipoObjetoById(int id)
         {
             try
             {
-                TipoObjeto tipoObjeto = await _context.TipoObjeto.FirstOrDefaultAsync(o => o.Id == id);
+                TipoObjeto tipoObjeto = await _context.TiposObjeto.FirstOrDefaultAsync(r => r.Id == id);
 
                 if (tipoObjeto == null)
-                {
-                    return NotFound("Tipo objeto não encontrado");
-                }
+                    return NotFound("Tipo objeto não encontrado.");
+
                 return Ok(tipoObjeto);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                return BadRequest($"Erro ao buscar Tipo objeto {ex.Message}");
+                return BadRequest($"Erro ao buscar o tipo de objeto: {ex.Message}");
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostTipoObjeto(TipoObjeto novoTipoObjeto)
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetTipoObjeto()
         {
             try
             {
-                _context.TipoObjeto.Add(novoTipoObjeto);
-                await _context.SaveChangesAsync();
+                var lista = await _context.TiposObjeto
+                        .Include(t => t.UsuarioInclusao)
+                        .Include(t => t.UsuarioAtualizacao)
+                        .ToListAsync();
 
-                return CreatedAtAction(nameof(GetPorIdTipoObjeto), new { id = novoTipoObjeto.Id }, novoTipoObjeto);
+                return Ok(lista);
+
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Erro ao buscar tipo objeto: {ex.Message}");
+
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTipoObjeto(int id)
+
+        public async Task<IActionResult> ExcluirTipoObjeto(int id)
         {
             try
             {
-                var tipoObjeto = await _context.TipoObjeto.FindAsync(id);
-                if (tipoObjeto == null)
-                {
-                    return NotFound($"Objeto com ID {id} não encontrado.");
-                }
-                _context.TipoObjeto.Remove(tipoObjeto);
-                await _context.SaveChangesAsync();
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erro ao excluir tipo objeto; {ex.Message}");
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTipoObjeto(int id)
-        {
-            try
-            {
-                var tipoObjeto = await _context.TipoObjeto.FindAsync(id);
+                TipoObjeto tipoObjeto = await _context.TiposObjeto.FindAsync(id);
 
                 if (tipoObjeto == null)
-                {
-                    return NotFound("Tipo objeto não foi encontrado");
-                }
+                    return NotFound("Tipo objeto não encontrado.");
+                tipoObjeto.Situacao = SituacaoTipoObjetoEnum.Inativo;
+                tipoObjeto.DtAtualizacao = DateTime.Now;
 
-                _context.TipoObjeto.Update(tipoObjeto);
+                var usuario = await GetUsuarioLogadoAsync();
+                if (usuario == null)
+                    return StatusCode(500, "Usuário logado não encontrado.");
+                tipoObjeto.IdUsuarioAtualizacao = usuario.Id;
+
+                _context.TiposObjeto.Update(tipoObjeto);
                 await _context.SaveChangesAsync();
 
-                return Ok(tipoObjeto);
+                return Ok(new
+                {
+                    message = "Tipo Objeto inativo com sucesso.",
+                    tipoOb = tipoObjeto
+                });
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                return BadRequest($"Erro ao atualizar o tipo objeto: {ex.Message}");
+                return StatusCode(500, $"Erro ao alterar situação do tipo de objeto. {ex.Message}");
             }
         }
-
-
-
-
-
     }
 }

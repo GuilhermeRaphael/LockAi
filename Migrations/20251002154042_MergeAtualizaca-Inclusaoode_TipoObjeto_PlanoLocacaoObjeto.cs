@@ -8,34 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LockAi.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationCorrigidaPlanoLocacao : Migration
+    public partial class MergeAtualizacaInclusaoode_TipoObjeto_PlanoLocacaoObjeto : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Objetos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LocalidadePrimaria = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LocalidadeSecundaria = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LocalidadeTercearia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Situacao = table.Column<int>(type: "int", nullable: false),
-                    IdTipoObjeto = table.Column<int>(type: "int", nullable: false),
-                    DtInclusao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUsuarioInclusao = table.Column<int>(type: "int", nullable: false),
-                    DtAtualizao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUsuarioAtualizacao = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Objetos", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "RepresentanteLegal",
                 columns: table => new
@@ -50,24 +27,6 @@ namespace LockAi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RepresentanteLegal", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TipoObjeto",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Situacao = table.Column<int>(type: "int", nullable: false),
-                    DtInclusao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUsuarioInclusao = table.Column<int>(type: "int", nullable: false),
-                    DtAtualizao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUsuarioAtualizacao = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TipoObjeto", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,6 +121,36 @@ namespace LockAi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TiposObjeto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Situacao = table.Column<int>(type: "int", nullable: false),
+                    DtInclusao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUsuarioInclusao = table.Column<int>(type: "int", nullable: false),
+                    UsuarioInclusaoId = table.Column<int>(type: "int", nullable: true),
+                    DtAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUsuarioAtualizacao = table.Column<int>(type: "int", nullable: false),
+                    UsuarioAtualizacaoId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TiposObjeto", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TiposObjeto_Usuarios_UsuarioAtualizacaoId",
+                        column: x => x.UsuarioAtualizacaoId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TiposObjeto_Usuarios_UsuarioInclusaoId",
+                        column: x => x.UsuarioInclusaoId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TiposRequerimento",
                 columns: table => new
                 {
@@ -214,14 +203,40 @@ namespace LockAi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlanoLocacaoObjeto",
+                name: "Objetos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocalidadePrimaria = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocalidadeSecundaria = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocalidadeTercearia = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Situacao = table.Column<int>(type: "int", nullable: false),
+                    IdTipoObjeto = table.Column<int>(type: "int", nullable: false),
+                    DtInclusao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUsuarioInclusao = table.Column<int>(type: "int", nullable: false),
+                    DtAtualizao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUsuarioAtualizacao = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Objetos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Objetos_TiposObjeto_IdTipoObjeto",
+                        column: x => x.IdTipoObjeto,
+                        principalTable: "TiposObjeto",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlanosLocacoesObjeto",
+                columns: table => new
+                {
                     IdPlanoLocacao = table.Column<int>(type: "int", nullable: false),
                     IdTipoObjeto = table.Column<int>(type: "int", nullable: false),
-                    TipoObjetoId = table.Column<int>(type: "int", nullable: false),
                     Situacao = table.Column<int>(type: "int", nullable: false),
                     DtInclusao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdUsuarioInclusao = table.Column<int>(type: "int", nullable: false),
@@ -230,17 +245,49 @@ namespace LockAi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlanoLocacaoObjeto", x => x.Id);
+                    table.PrimaryKey("PK_PlanosLocacoesObjeto", x => new { x.IdPlanoLocacao, x.IdTipoObjeto });
                     table.ForeignKey(
-                        name: "FK_PlanoLocacaoObjeto_PlanosLocacao_IdPlanoLocacao",
+                        name: "FK_PlanosLocacoesObjeto_PlanosLocacao_IdPlanoLocacao",
                         column: x => x.IdPlanoLocacao,
                         principalTable: "PlanosLocacao",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PlanosLocacoesObjeto_TiposObjeto_IdTipoObjeto",
+                        column: x => x.IdTipoObjeto,
+                        principalTable: "TiposObjeto",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Requerimentos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Momento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdLocacao = table.Column<int>(type: "int", nullable: false),
+                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Situacao = table.Column<int>(type: "int", nullable: false),
+                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUsuarioAtualizacao = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    TipoRequerimentoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Requerimentos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Requerimentos_TiposRequerimento_TipoRequerimentoId",
+                        column: x => x.TipoRequerimentoId,
+                        principalTable: "TiposRequerimento",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PlanoLocacaoObjeto_TipoObjeto_TipoObjetoId",
-                        column: x => x.TipoObjetoId,
-                        principalTable: "TipoObjeto",
+                        name: "FK_Requerimentos_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -289,38 +336,6 @@ namespace LockAi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Requerimentos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Momento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdLocacao = table.Column<int>(type: "int", nullable: false),
-                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Situacao = table.Column<int>(type: "int", nullable: false),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUsuarioAtualizacao = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    TipoRequerimentoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Requerimentos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Requerimentos_TiposRequerimento_TipoRequerimentoId",
-                        column: x => x.TipoRequerimentoId,
-                        principalTable: "TiposRequerimento",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Requerimentos_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 table: "RepresentanteLegal",
                 columns: new[] { "Id", "Cpf", "Email", "Nome", "Telefone" },
@@ -362,14 +377,9 @@ namespace LockAi.Migrations
                 values: new object[] { 1, new DateTime(2025, 8, 26, 10, 0, 0, 0, DateTimeKind.Unspecified), 101, 0, new DateTime(2025, 8, 26, 10, 0, 0, 0, DateTimeKind.Unspecified), "Solicitação enviada pelo aluno João", 3, 1, 1 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlanoLocacaoObjeto_IdPlanoLocacao",
-                table: "PlanoLocacaoObjeto",
-                column: "IdPlanoLocacao");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlanoLocacaoObjeto_TipoObjetoId",
-                table: "PlanoLocacaoObjeto",
-                column: "TipoObjetoId");
+                name: "IX_Objetos_IdTipoObjeto",
+                table: "Objetos",
+                column: "IdTipoObjeto");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlanosLocacao_IdUsuarioAtualizacao",
@@ -385,6 +395,11 @@ namespace LockAi.Migrations
                 name: "IX_PlanosLocacao_UsuarioId",
                 table: "PlanosLocacao",
                 column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanosLocacoesObjeto_IdTipoObjeto",
+                table: "PlanosLocacoesObjeto",
+                column: "IdTipoObjeto");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PropostaLocacao_ObjetoId",
@@ -410,6 +425,16 @@ namespace LockAi.Migrations
                 name: "IX_Requerimentos_UsuarioId",
                 table: "Requerimentos",
                 column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TiposObjeto_UsuarioAtualizacaoId",
+                table: "TiposObjeto",
+                column: "UsuarioAtualizacaoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TiposObjeto_UsuarioInclusaoId",
+                table: "TiposObjeto",
+                column: "UsuarioInclusaoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TiposRequerimento_UsuarioAtualizacaoId",
@@ -441,7 +466,7 @@ namespace LockAi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PlanoLocacaoObjeto");
+                name: "PlanosLocacoesObjeto");
 
             migrationBuilder.DropTable(
                 name: "PropostaLocacao");
@@ -453,9 +478,6 @@ namespace LockAi.Migrations
                 name: "UsuarioImagens");
 
             migrationBuilder.DropTable(
-                name: "TipoObjeto");
-
-            migrationBuilder.DropTable(
                 name: "Objetos");
 
             migrationBuilder.DropTable(
@@ -463,6 +485,9 @@ namespace LockAi.Migrations
 
             migrationBuilder.DropTable(
                 name: "TiposRequerimento");
+
+            migrationBuilder.DropTable(
+                name: "TiposObjeto");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
