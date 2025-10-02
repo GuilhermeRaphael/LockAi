@@ -21,13 +21,13 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-        [HttpGet("GetId/{idPlano}/{idTipoObjeto}")]
-        public async Task<ActionResult<PlanoLocacaoObjeto>> GetPlanoLocacaoObjetoById(int idPlano, int idTipoObjeto)
+        [HttpGet("GetId/{idPlanoLocacao}/{idTipoObjeto}")]
+        public async Task<ActionResult<PlanoLocacaoObjeto>> GetPlanoLocacaoObjetoById(int idPlanoLocacao, int idTipoObjeto)
         {
             try
             {
                 var listPlanoLocacaoObjeto = await _context.PlanosLocacoesObjeto
-                .FirstOrDefaultAsync(p => p.IdPlanoLocacao == idPlano && p.IdTipoObjeto == idTipoObjeto);
+                .FirstOrDefaultAsync(p => p.IdPlanoLocacao == idPlanoLocacao && p.IdTipoObjeto == idTipoObjeto);
 
 
                 if (listPlanoLocacaoObjeto == null)
@@ -40,34 +40,52 @@ namespace LockAi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
+        
+        
         [HttpPost]
-        public async Task<IActionResult> AddPlanoLocacaoObjeto(PlanoLocacaoObjeto novoplanoLocacaoObjeto)
+        public async Task<IActionResult> AddPlanoLocacaoObjeto(PlanoLocacaoObjeto novoObjeto)
         {
             try
             {
-                novoplanoLocacaoObjeto.Situacao = SituacaoPlanoLocacaoObjeto.Vinculado;
-                novoplanoLocacaoObjeto.DtInclusao = DateTime.Now;
+                var plano = await _context.PlanosLocacao.FindAsync(novoObjeto.IdPlanoLocacao);
+                if (plano == null)
+                    return BadRequest($"Plano com Id {novoObjeto.IdPlanoLocacao} não encontrado.");
 
+                var tipoObjeto = await _context.TiposObjeto.FindAsync(novoObjeto.IdTipoObjeto);
+                if (tipoObjeto == null)
+                    return BadRequest($"Tipo de objeto com Id {novoObjeto.IdTipoObjeto} não encontrado.");
+
+                
                 var usuario = await GetUsuarioLogadoAsync();
-                novoplanoLocacaoObjeto.IdUsuarioInclusao = usuario.Id;
 
-                _context.PlanosLocacoesObjeto.Add(novoplanoLocacaoObjeto);
+                // Associação já existe
+                var existe = await _context.PlanosLocacoesObjeto
+                    .AnyAsync(p => p.IdPlanoLocacao == novoObjeto.IdPlanoLocacao &&
+                                p.IdTipoObjeto == novoObjeto.IdTipoObjeto);
+                //Cond. aplicada aqui:
+                if (existe)
+                    return BadRequest("Essa associação já existe.");
+
+                    novoObjeto.Situacao = SituacaoPlanoLocacaoObjeto.Vinculado;
+                    novoObjeto.DtInclusao = DateTime.Now;
+                    novoObjeto.IdUsuarioInclusao = usuario.Id;
+
+                // salva no banco
+                _context.PlanosLocacoesObjeto.Add(novoObjeto);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction(nameof(GetPlanoLocacaoObjetoById), new
                 {
-                    idPlanoLocacao = novoplanoLocacaoObjeto.IdPlanoLocacao,
-
-                    idTipoObjeto = novoplanoLocacaoObjeto.IdTipoObjeto
-                },
-                novoplanoLocacaoObjeto
-                );
+                    idPlanoLocacao = novoObjeto.IdPlanoLocacao,       
+                    idTipoObjeto = novoObjeto.IdTipoObjeto
+                }, novoObjeto);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Erro ao associar plano de locação a objeto: {ex.Message}");
             }
         }
+
         private async Task<Usuario> GetUsuarioLogadoAsync()
         {
             return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto, mudar com a implementação do JWT
@@ -80,6 +98,8 @@ namespace LockAi.Controllers
             {
                 var listTipoObjeto = await _context.PlanosLocacoesObjeto
                 .Where(p => p.IdTipoObjeto == idTipoObjeto)
+                .Include(p => p.PlanoLocacao)   // carrega o plano associado
+                .Include(p => p.TipoObjeto)
                 .ToListAsync();
 
                 if (!listTipoObjeto.Any()      )
