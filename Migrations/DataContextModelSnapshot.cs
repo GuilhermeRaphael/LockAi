@@ -169,29 +169,18 @@ namespace LockAi.Migrations
                     b.Property<DateTime>("DtInclusao")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdUsuarioAtualizacao")
                         .HasColumnType("int");
 
                     b.Property<int>("IdUsuarioInclusao")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlanoLocacaoId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Situacao")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TipoObjetoId")
                         .HasColumnType("int");
 
                     b.HasKey("IdPlanoLocacao", "IdTipoObjeto");
 
-                    b.HasIndex("PlanoLocacaoId");
-
-                    b.HasIndex("TipoObjetoId");
+                    b.HasIndex("IdTipoObjeto");
 
                     b.ToTable("PlanosLocacoesObjeto");
                 });
@@ -376,7 +365,7 @@ namespace LockAi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DtAtualizao")
+                    b.Property<DateTime>("DtAtualizacao")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DtInclusao")
@@ -651,11 +640,15 @@ namespace LockAi.Migrations
                 {
                     b.HasOne("LockAi.Models.PlanoLocacao", "PlanoLocacao")
                         .WithMany("PlanoLocacaoObjetos")
-                        .HasForeignKey("PlanoLocacaoId");
+                        .HasForeignKey("IdPlanoLocacao")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("LockAi.Models.TipoObjeto", "TipoObjeto")
                         .WithMany("PlanoLocacaoObjetos")
-                        .HasForeignKey("TipoObjetoId");
+                        .HasForeignKey("IdTipoObjeto")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("PlanoLocacao");
 

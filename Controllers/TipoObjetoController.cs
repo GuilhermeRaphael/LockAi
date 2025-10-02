@@ -97,7 +97,7 @@ namespace LockAi.Controllers
                 if (tipoObjeto == null)
                     return NotFound("Tipo objeto não encontrado.");
                 tipoObjeto.Situacao = SituacaoTipoObjetoEnum.Inativo;
-                tipoObjeto.DtAtualizao = DateTime.Now;
+                tipoObjeto.DtAtualizacao = DateTime.Now;
 
                 var usuario = await GetUsuarioLogadoAsync();
                 if (usuario == null)

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250918183643_AddTipoObjetoObjetoPlanoLocacaoObjeto")]
-    partial class AddTipoObjetoObjetoPlanoLocacaoObjeto
+    [Migration("20251002154042_MergeAtualizaca-Inclusaoode_TipoObjeto_PlanoLocacaoObjeto")]
+    partial class MergeAtualizacaInclusaoode_TipoObjeto_PlanoLocacaoObjeto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,29 +172,18 @@ namespace LockAi.Migrations
                     b.Property<DateTime>("DtInclusao")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdUsuarioAtualizacao")
                         .HasColumnType("int");
 
                     b.Property<int>("IdUsuarioInclusao")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlanoLocacaoId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Situacao")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TipoObjetoId")
                         .HasColumnType("int");
 
                     b.HasKey("IdPlanoLocacao", "IdTipoObjeto");
 
-                    b.HasIndex("PlanoLocacaoId");
-
-                    b.HasIndex("TipoObjetoId");
+                    b.HasIndex("IdTipoObjeto");
 
                     b.ToTable("PlanosLocacoesObjeto");
                 });
@@ -379,7 +368,7 @@ namespace LockAi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DtAtualizao")
+                    b.Property<DateTime>("DtAtualizacao")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DtInclusao")
@@ -574,7 +563,7 @@ namespace LockAi.Migrations
                             Id = 1,
                             Cpf = "00000000000",
                             DtNascimento = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DtSituacao = new DateTime(2025, 9, 18, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            DtSituacao = new DateTime(2025, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sistema@lockai.com",
                             IdUsuarioSituacao = 1,
                             Login = "sistema",
@@ -654,11 +643,15 @@ namespace LockAi.Migrations
                 {
                     b.HasOne("LockAi.Models.PlanoLocacao", "PlanoLocacao")
                         .WithMany("PlanoLocacaoObjetos")
-                        .HasForeignKey("PlanoLocacaoId");
+                        .HasForeignKey("IdPlanoLocacao")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("LockAi.Models.TipoObjeto", "TipoObjeto")
                         .WithMany("PlanoLocacaoObjetos")
-                        .HasForeignKey("TipoObjetoId");
+                        .HasForeignKey("IdTipoObjeto")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("PlanoLocacao");
 

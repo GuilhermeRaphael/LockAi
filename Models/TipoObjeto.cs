@@ -14,7 +14,7 @@ namespace LockAi.Models
         public DateTime DtInclusao { get; set; }
         public int IdUsuarioInclusao { get; set; } //FK
         public Usuario? UsuarioInclusao { get; set; } //naveção
-        public DateTime DtAtualizao { get; set; }
+        public DateTime DtAtualizacao { get; set; }
         public int IdUsuarioAtualizacao { get; set; } // Fk
         public Usuario? UsuarioAtualizacao { get; set; } //navegação
         public ICollection<PlanoLocacaoObjeto>? PlanoLocacaoObjetos { get; set; }

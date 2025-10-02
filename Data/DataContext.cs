@@ -164,6 +164,19 @@ namespace LockAi.Data
                 .WithMany(o => o.PlanoLocacaoObjetos)
                 .HasForeignKey(p => p.IdPlanoLocacao); */
 
+
+            modelBuilder.Entity<PlanoLocacaoObjeto>()
+                .HasOne(po => po.PlanoLocacao)
+                .WithMany(p => p.PlanoLocacaoObjetos)
+                .HasForeignKey(po => po.IdPlanoLocacao)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PlanoLocacaoObjeto>()
+                .HasOne(po => po.TipoObjeto)
+                .WithMany(t => t.PlanoLocacaoObjetos)
+                .HasForeignKey(po => po.IdTipoObjeto)
+                .OnDelete(DeleteBehavior.Restrict);
+                
             modelBuilder.Entity<Objeto>()
                 .HasOne(u => u.TipoObjeto)
                 .WithMany(r => r.Objeto)

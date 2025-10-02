@@ -21,14 +21,14 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-        [HttpGet("GetId/{idPlano}")]
-        public async Task<IActionResult> GetIdPlanoById(int idPlano)
+        [HttpGet("GetId/{idPlano}/{idTipoObjeto}")]
+        public async Task<ActionResult<PlanoLocacaoObjeto>> GetPlanoLocacaoObjetoById(int idPlano, int idTipoObjeto)
         {
             try
             {
                 var listPlanoLocacaoObjeto = await _context.PlanosLocacoesObjeto
-                .Where(p => p.IdPlanoLocacao == idPlano)
-                .ToListAsync();
+                .FirstOrDefaultAsync(p => p.IdPlanoLocacao == idPlano && p.IdTipoObjeto == idTipoObjeto);
+
 
                 if (listPlanoLocacaoObjeto == null)
                     return NotFound("Nenhuma associação encontrada para este plano.");
@@ -54,12 +54,18 @@ namespace LockAi.Controllers
 
                 _context.PlanosLocacoesObjeto.Add(novoplanoLocacaoObjeto);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetIdPlanoById), new { id = novoplanoLocacaoObjeto.Id }, novoplanoLocacaoObjeto);
-            }
-            catch (System.Exception)
-            {
+                return CreatedAtAction(nameof(GetPlanoLocacaoObjetoById), new
+                {
+                    idPlanoLocacao = novoplanoLocacaoObjeto.IdPlanoLocacao,
 
-                throw;
+                    idTipoObjeto = novoplanoLocacaoObjeto.IdTipoObjeto
+                },
+                novoplanoLocacaoObjeto
+                );
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Erro ao associar plano de locação a objeto: {ex.Message}");
             }
         }
         private async Task<Usuario> GetUsuarioLogadoAsync()
@@ -76,7 +82,7 @@ namespace LockAi.Controllers
                 .Where(p => p.IdTipoObjeto == idTipoObjeto)
                 .ToListAsync();
 
-                if (listTipoObjeto == null)
+                if (!listTipoObjeto.Any()      )
                     return NotFound("Nenhuma associação encontrada para este tipo de objeto.");
 
                 return Ok(listTipoObjeto);
