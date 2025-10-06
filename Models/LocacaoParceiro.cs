@@ -8,8 +8,9 @@ namespace LockAi.Models
 {
     public class LocacaoParceiro
     {
-        public int Id { get; set; }
-        public int IdParceiro { get; set; }
+        public int? IdLocacao { get; set; } // FK
+        public Locacao? Locacao { get; set; } // navegação
+        public int IdParceiro { get; set; } 
         public string IdentificacaoParceiro { get; set; }
         public string NomeParceiro { get; set; }
         public SituacaoLocacaoParceiroEnum Situacao { get; set; }
