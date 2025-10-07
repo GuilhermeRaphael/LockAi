@@ -16,7 +16,8 @@ builder.Services.AddControllers()
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoSomeeGabi")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoLocalNotebookGabi")));
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

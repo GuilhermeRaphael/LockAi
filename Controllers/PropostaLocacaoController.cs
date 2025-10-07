@@ -21,7 +21,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-        [HttpPost("ValidarLocacao")]
+        [HttpPost("ValidarLocacao")] //Inserir proposta
         public async Task<IActionResult> AddPropostaLocacao(PropostaLocacao novaLocacao)
         {
             try
@@ -36,11 +36,21 @@ namespace LockAi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+                    message = ex.Message,
+                    inner = ex.InnerException?.Message
+                });
             }
+
+
+            //catch (Exception ex)
+            //{
+            //    return BadRequest(ex.Message);
+            //}
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}")] //Alterar proposta
         public async Task<IActionResult> UpdateProposta(int id, PropostaLocacao propostaAtualizada)
         {
             var proposta = await _context.PropostasLocacao.FindAsync(id);
@@ -57,14 +67,14 @@ namespace LockAi.Controllers
             return Ok(proposta); // Retorna a proposta com os dados atualizados
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet("GetAll")] //Listar propostas
         public async Task<IActionResult> GetAll()
         {
             var propostas = await _context.PropostasLocacao.ToListAsync();
             return Ok(propostas);
         }
 
-        [HttpGet("{id:int}", Name = "GetPropostaLocacaoById")]
+        [HttpGet("{id:int}", Name = "GetPropostaLocacaoById")] //Consultar proposta por id
         public async Task<IActionResult> GetPropostaLocacaoById(int id)
         {
             var proposta = await _context.PropostasLocacao.FindAsync(id);
@@ -84,22 +94,58 @@ namespace LockAi.Controllers
             if (locacao.Valor <= 0)
                 throw new ArgumentException("O valor deve ser maior que zero.");
         }
-        
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProposta(int id)
-        {
-        var proposta = await _context.PropostasLocacao.FindAsync(id);
 
-        if (proposta == null)
+        [HttpPut("Cancelar/{id}")] //Cancelar proposta 
+        public async Task<IActionResult> CancelarProposta(int id)
         {
-        return NotFound("Proposta não encontrada.");
+            var proposta = await _context.PropostasLocacao.FindAsync(id);
+
+            if (proposta == null)
+                return NotFound("Proposta não encontrada.");
+
+            proposta.Situacao = SituacaoPropostaEnum.Cancelada; // Enum que você já tem
+
+            await _context.SaveChangesAsync();
+
+            return Ok($"Proposta {id} foi cancelada com sucesso.");
         }
 
-         _context.PropostasLocacao.Remove(proposta);
-         await _context.SaveChangesAsync();
+        [HttpPost("Pagamento/{id}")] //Efetuar pagamento
+        public async Task<IActionResult> EfetuarPagamento(int id, [FromBody] decimal valorPago)
+        {
+            var proposta = await _context.PropostasLocacao.FindAsync(id);
 
-         // Retorna uma mensagem de sucesso
-         return Ok("Proposta de ID " + id + " foi deletada com sucesso."); 
+            if (proposta == null)
+                return NotFound("Proposta não encontrada.");
+
+            if (valorPago < proposta.Valor)
+                return BadRequest("Valor pago insuficiente.");
+
+            proposta.Situacao = SituacaoPropostaEnum.Concluida;
+            proposta.ValorPago = valorPago; // se tiver essa propriedade no modelo
+
+            await _context.SaveChangesAsync();
+
+            return Ok($"Pagamento da proposta {id} realizado com sucesso.");
+        }
+
+
+
+        [HttpDelete("{id}")] //Deletar proposta
+        public async Task<IActionResult> DeleteProposta(int id)
+        {
+            var proposta = await _context.PropostasLocacao.FindAsync(id);
+
+            if (proposta == null)
+            {
+                return NotFound("Proposta não encontrada.");
+            }
+
+            _context.PropostasLocacao.Remove(proposta);
+            await _context.SaveChangesAsync();
+
+            // Retorna uma mensagem de sucesso
+            return Ok("Proposta de ID " + id + " foi deletada com sucesso.");
         }
     }
 }

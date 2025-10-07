@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 using LockAi.Models.Enuns;
+
 namespace LockAi.Models
 {
     public class PropostaLocacao
@@ -15,16 +16,22 @@ namespace LockAi.Models
         public Usuario? Usuario { get; set; }
         public int IdObjeto { get; set; }
         public Objeto? Objeto { get; set; }
-        public int PlanoLocacaoId { get; set; } 
+        public int PlanoLocacaoId { get; set; }
 
-        [ForeignKey("PlanoLocacaoId")] 
+        [ForeignKey("PlanoLocacaoId")]
         public PlanoLocacao? PlanoLocacao { get; set; }
         public DateTime DtInicio { get; set; }
         public DateTime DtFim { get; set; }
         public DateTime DtValidade { get; set; }
-        public float Valor { get; set; }
+        public decimal Valor { get; set; }
         public SituacaoPropostaEnum Situacao { get; set; }
         public DateTime DtSituacao { get; set; }
         public int IdUsuarioSituacao { get; set; }
+
+        //ValorPago e DataPagamento, a própria Proposta também passa a guardar quando foi paga e quanto foi pago.
+        public decimal? ValorPago { get; set; } 
+        public DateTime? DataPagamento { get; set; }
+
+        
     }
 }

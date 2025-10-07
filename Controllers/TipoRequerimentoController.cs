@@ -121,7 +121,8 @@ namespace LockAi.Controllers
         {
             try
             {
-                TipoRequerimento tipoRequerimento = await _context.TiposRequerimento.FindAsync(id);
+                TipoRequerimento? tipoRequerimento1 = await _context.TiposRequerimento.FindAsync(id);
+                TipoRequerimento tipoRequerimento = tipoRequerimento1;
 
                 if (tipoRequerimento == null)
                     return NotFound("Tipo de requerimento não encontrado.");
