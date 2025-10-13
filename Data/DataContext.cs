@@ -26,6 +26,8 @@ namespace LockAi.Data
         public DbSet<TipoObjeto> TiposObjeto { get; set; }
         public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
         public DbSet<PlanoLocacaoObjeto> PlanosLocacoesObjeto { get; set; }
+        public DbSet<Locacao> Locacoes { get; set; }
+        public DbSet<LocacaoParceiro> LocacoesParceiro { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

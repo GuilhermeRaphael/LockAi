@@ -18,9 +18,8 @@ namespace LockAi.Models
         public DateTime DataFim { get; set; }
         public float Valor { get; set; }
         public SituacaoLocacaoEnum Situacao { get; set; }
-        public string DataSituacao { get; set; }
+        public DateTime DataSituacao { get; set; }
         public int IdUsuarioSituacao { get; set; }
-
         // 1:1
         [JsonIgnore]
         public LocacaoParceiro? LocacaoParceiro { get; set; }

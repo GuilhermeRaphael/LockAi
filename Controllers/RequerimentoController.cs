@@ -85,40 +85,64 @@ namespace LockAi.Controllers
         [HttpGet("situacao/{situacao}")]
         public async Task<IActionResult> GetRequerimentosPorSituacao(SituacaoRequerimentoEnum situacao)
         {
-            var requerimentos = await _context.Requerimentos
-                .Include(r => r.Usuario)
-                .Where(r => r.Situacao == situacao)
-                .ToListAsync();
+            try
+            {
+                var requerimentos = await _context.Requerimentos
+                    .Include(r => r.Usuario)
+                    .Where(r => r.Situacao == situacao)
+                    .ToListAsync();
 
-            return Ok(requerimentos);
+                return Ok(requerimentos);   
+            }
+            catch (System.Exception ex)
+            {
+                 return StatusCode(500, $"Erro ao buscar por situação do requerimento. {ex.Message}");
+            }
         }
 
         [HttpPut("{id}/aprovar")]
         public async Task<IActionResult> Aprovar(int id)
         {
-            var requerimento = await _context.Requerimentos.FindAsync(id);
+            try
+            {
+                 var requerimento = await _context.Requerimentos.FindAsync(id);
 
-            if (requerimento == null)
-                return NotFound("Requerimento não encontrado.");
+                if (requerimento == null)
+                    return NotFound("Requerimento não encontrado.");
 
-            requerimento.Situacao = SituacaoRequerimentoEnum.Aprovado;
-            await _context.SaveChangesAsync();
+                requerimento.Situacao = SituacaoRequerimentoEnum.Aprovado;
+                await _context.SaveChangesAsync();
 
-            return Ok(requerimento);
+                return Ok(requerimento);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Erro ao aprovar requerimento. {ex.Message}");
+            }
+           
         }
 
         [HttpPut("{id}/reprovar")]
         public async Task<IActionResult> Reprovar(int id)
         {
-            var requerimento = await _context.Requerimentos.FindAsync(id);
 
-            if (requerimento == null)
-                return NotFound("Requerimento não encontrado.");
+            try
+            {
+                var requerimento = await _context.Requerimentos.FindAsync(id);
 
-            requerimento.Situacao = SituacaoRequerimentoEnum.Reprovado;
-            await _context.SaveChangesAsync();
+                if (requerimento == null)
+                    return NotFound("Requerimento não encontrado.");
 
-            return Ok(requerimento);
+                requerimento.Situacao = SituacaoRequerimentoEnum.Reprovado;
+                await _context.SaveChangesAsync();
+
+                return Ok(requerimento);    
+            }
+            catch (System.Exception ex)
+            {
+                 return StatusCode(500, $"Erro ao reprovar requerimento. {ex.Message}");
+            }
+            
         }
     }
 }

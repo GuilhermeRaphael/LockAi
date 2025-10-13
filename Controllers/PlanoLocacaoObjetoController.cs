@@ -59,11 +59,10 @@ namespace LockAi.Controllers
                 
                 var usuario = await GetUsuarioLogadoAsync();
 
-                // Associação já existe
                 var existe = await _context.PlanosLocacoesObjeto
                     .AnyAsync(p => p.IdPlanoLocacao == novoObjeto.IdPlanoLocacao &&
                                 p.IdTipoObjeto == novoObjeto.IdTipoObjeto);
-                //Cond. aplicada aqui:
+               
                 if (existe)
                     return BadRequest("Essa associação já existe.");
 
@@ -71,7 +70,7 @@ namespace LockAi.Controllers
                     novoObjeto.DtInclusao = DateTime.Now;
                     novoObjeto.IdUsuarioInclusao = usuario.Id;
 
-                // salva no banco
+                
                 _context.PlanosLocacoesObjeto.Add(novoObjeto);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction(nameof(GetPlanoLocacaoObjetoById), new
