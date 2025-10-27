@@ -11,7 +11,7 @@ namespace LockAi.Models
     {
         public int Id { get; set; }
         public int IdPropostaLocacao { get; set; } // FK
-        public PropostaLocacao propostaLocacao { get; set; } // Navegação
+        public PropostaLocacao PropostaLocacao { get; set; } // Navegação
         public int IdUsuario { get; set; }  // FK
         public Usuario? Usuario { get; set; } // Navegação
         public DateTime DataInicio { get; set; }

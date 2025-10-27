@@ -56,7 +56,7 @@ namespace LockAi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest($"Erro ao buscar locacão.");
+                return BadRequest($"Erro ao buscar locacão. {ex.Message}");
             }
         }
 
