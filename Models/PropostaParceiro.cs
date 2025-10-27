@@ -12,5 +12,7 @@ namespace LockAi.Models
         public string NomeParceiro { get; set; }
         public int IdParceiro { get; set; }
         public LocacaoParceiro LocacaoParceiro { get; set; }
+        public int PropostaLocacaoId { get; set; }  // FK
+        public PropostaLocacao PropostaLocacao { get; set; }
     }
 }

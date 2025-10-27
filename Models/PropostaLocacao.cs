@@ -24,5 +24,9 @@ namespace LockAi.Models
         public SituacaoPropostaEnum Situacao { get; set; }
         public DateTime DtSituacao { get; set; }
         public int IdUsuarioSituacao { get; set; }
+
+        public Locacao Locacao { get; set; } // Navegação
+        
+        // Falta montar relacionamento
     }
 }
