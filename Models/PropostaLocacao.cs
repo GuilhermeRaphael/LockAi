@@ -12,11 +12,11 @@ namespace LockAi.Models
         public int Id { get; set; }
         public DateTime Data { get; set; }
         public int IdUsuario { get; set; } //FK
-        public Usuario Usuario { get; set; } // Navegação
+        public Usuario? Usuario { get; set; } // Navegação
         public int IdObjeto { get; set; } // FK
-        public Objeto Objeto { get; set; } // Navegação
+        public Objeto? Objeto { get; set; } // Navegação
         public int IdPlanoLocacao { get; set; } // FK
-        public PlanoLocacao PlanoLocacao { get; set; } // Navegação
+        public PlanoLocacao? PlanoLocacao { get; set; } // Navegação
         public DateTime DtInicio { get; set; }
         public DateTime DtFim { get; set; }
         public DateTime DtValidade { get; set; }
@@ -25,7 +25,7 @@ namespace LockAi.Models
         public DateTime DtSituacao { get; set; }
         public int IdUsuarioSituacao { get; set; }
 
-        public Locacao Locacao { get; set; } // Navegação
+        public Locacao? Locacao { get; set; } // Navegação
         
         // Falta montar relacionamento
     }

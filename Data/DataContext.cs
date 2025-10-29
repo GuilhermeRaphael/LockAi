@@ -84,7 +84,7 @@ namespace LockAi.Data
             );
 
             // Requerimento referenciando o usuário técnico
-            modelBuilder.Entity<Requerimento>().HasData(
+            /*modelBuilder.Entity<Requerimento>().HasData(
                 new Requerimento
                 {
                     Id = 1,
@@ -96,7 +96,7 @@ namespace LockAi.Data
                     DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0),
                     UsuarioId = 1
                 }
-            );
+            );*/
 
             // Plano de locação referenciando o usuário técnico
             modelBuilder.Entity<PlanoLocacao>().HasData(
@@ -216,6 +216,16 @@ namespace LockAi.Data
                 .HasOne(u => u.Objeto)
                 .WithMany(r => r.PropostaLocacao)
                 .HasForeignKey(u => u.IdObjeto);
+
+            modelBuilder.Entity<PropostaLocacao>()
+                .HasOne(u => u.Locacao)
+                .WithOne(r => r.PropostaLocacao)
+                .HasForeignKey<Locacao>(u => u.IdPropostaLocacao)
+                .IsRequired(false);
+
+            // PropostaLocacao ---> Usuario 
+            // PropostaLocacao ---> PropostaLocacaoPagamento
+            // PropostaLocacao ---> PropostaParceiro
         }
     }
 }

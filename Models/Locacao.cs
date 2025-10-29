@@ -10,7 +10,7 @@ namespace LockAi.Models
     public class Locacao
     {
         public int Id { get; set; }
-        public int IdPropostaLocacao { get; set; } // FK
+        public int? IdPropostaLocacao { get; set; } // FK
         public PropostaLocacao PropostaLocacao { get; set; } // Navegação
         public int IdUsuario { get; set; }  // FK
         public Usuario? Usuario { get; set; } // Navegação

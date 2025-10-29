@@ -19,7 +19,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-        [HttpPost("ValidarLocacao")]
+        [HttpPost]
         public async Task<IActionResult> AddPropostaLocacao(PropostaLocacao novaLocacao)
         {
             try
@@ -29,7 +29,7 @@ namespace LockAi.Controllers
                 _context.PropostasLocacao.Add(novaLocacao);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute("GetPropostaLocacaoById",
+                return CreatedAtAction(nameof(GetPropostaLocacaoById),
                     new { id = novaLocacao.Id }, novaLocacao);
             }
             catch (Exception ex)
@@ -37,8 +37,8 @@ namespace LockAi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
-         private void ValidarLocacao(PropostaLocacao locacao)
+
+        private void ValidarLocacao(PropostaLocacao locacao)
         {
             if (locacao == null)
                 throw new ArgumentException("A proposta de locação não pode ser nula.");
@@ -48,6 +48,15 @@ namespace LockAi.Controllers
 
             if (locacao.Valor <= 0)
                 throw new ArgumentException("O valor deve ser maior que zero.");
+        }
+        
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPropostaLocacaoById(int id)
+        {
+            var proposta = await _context.PropostasLocacao.FindAsync(id);
+            if (proposta == null)
+                return NotFound();
+            return Ok(proposta);
         }
 
 
