@@ -25,7 +25,9 @@ namespace LockAi.Controllers
         {
             try
             {
-                TipoUsuario tipoUsuario = await _context.TiposUsuario.Include(t => t.Usuarios).FirstOrDefaultAsync(tBusca => tBusca.Id == id);
+                TipoUsuario tipoUsuario = await _context.TiposUsuario
+                .Include(t => t.Usuarios)
+                .FirstOrDefaultAsync(tBusca => tBusca.Id == id);
                 // Retornara o tipo de Usuario,
                 // com as informações de usuarios 
                 // que sejam do mesmo tipo.
