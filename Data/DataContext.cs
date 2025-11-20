@@ -26,6 +26,7 @@ namespace LockAi.Data
         public DbSet<TipoObjeto> TiposObjeto { get; set; }
         public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
         public DbSet<PlanoLocacaoObjeto> PlanosLocacoesObjeto { get; set; }
+        public DbSet<PropostaLocacao> PropostaLocacao { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -176,11 +177,18 @@ namespace LockAi.Data
                 .WithMany(t => t.PlanoLocacaoObjetos)
                 .HasForeignKey(po => po.IdTipoObjeto)
                 .OnDelete(DeleteBehavior.Restrict);
-                
+
             modelBuilder.Entity<Objeto>()
                 .HasOne(u => u.TipoObjeto)
                 .WithMany(r => r.Objeto)
                 .HasForeignKey(p => p.IdTipoObjeto);
+
+            modelBuilder.Entity<PropostaLocacao>()
+                .HasOne(p => p.Objeto)
+                .WithMany(o => o.PropostaLocacao)
+                .HasForeignKey(p => p.IdObjeto)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
