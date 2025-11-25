@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Serialização de enums como string
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -12,14 +11,11 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.MaxDepth = 64;
     });
 
-// Swagger/OpenAPI
 builder.Services.AddOpenApi();
 
-// Conexão com banco de dados
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoLocal")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoAzure")));
 
-// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSomee", policy =>
@@ -31,15 +27,15 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseRouting(); // <- necessário para mapear rotas
-app.UseCors("AllowSomee"); // <- precisa vir entre Routing e Authorization
-app.UseAuthorization(); // <- mesmo que não esteja usando autenticação, é padrão
+app.UseRouting();
+app.UseCors("AllowSomee");
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.MapControllers(); // <- mapeia os endpoints
+app.MapControllers();
 
 app.Run();
