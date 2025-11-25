@@ -120,5 +120,7 @@ namespace LockAi.Controllers
 
             return Ok(requerimento);
         }
+
+        
     }
 }

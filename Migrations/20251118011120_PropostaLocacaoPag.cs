@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LockAi.Migrations
 {
     /// <inheritdoc />
-    public partial class MergeAtualizacaInclusaoode_TipoObjeto_PlanoLocacaoObjeto : Migration
+    public partial class PropostaLocacaoPag : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -302,7 +302,6 @@ namespace LockAi.Migrations
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     IdObjeto = table.Column<int>(type: "int", nullable: false),
-                    ObjetoId = table.Column<int>(type: "int", nullable: false),
                     IdPlanoLocacao = table.Column<int>(type: "int", nullable: false),
                     PlanoLocacaoId = table.Column<int>(type: "int", nullable: false),
                     DtInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -317,11 +316,11 @@ namespace LockAi.Migrations
                 {
                     table.PrimaryKey("PK_PropostaLocacao", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PropostaLocacao_Objetos_ObjetoId",
-                        column: x => x.ObjetoId,
+                        name: "FK_PropostaLocacao_Objetos_IdObjeto",
+                        column: x => x.IdObjeto,
                         principalTable: "Objetos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PropostaLocacao_PlanosLocacao_PlanoLocacaoId",
                         column: x => x.PlanoLocacaoId,
@@ -330,6 +329,38 @@ namespace LockAi.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PropostaLocacao_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PropostaLocacaoPagamento",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Data = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Comprovante = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    DtConferencia = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUsuarioConferencia = table.Column<int>(type: "int", nullable: false),
+                    Situacao = table.Column<int>(type: "int", nullable: false),
+                    IdPropostaLocacao = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PropostaLocacaoPagamento", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PropostaLocacaoPagamento_PropostaLocacao_IdPropostaLocacao",
+                        column: x => x.IdPropostaLocacao,
+                        principalTable: "PropostaLocacao",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PropostaLocacaoPagamento_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
                         principalColumn: "Id",
@@ -402,9 +433,9 @@ namespace LockAi.Migrations
                 column: "IdTipoObjeto");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PropostaLocacao_ObjetoId",
+                name: "IX_PropostaLocacao_IdObjeto",
                 table: "PropostaLocacao",
-                column: "ObjetoId");
+                column: "IdObjeto");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PropostaLocacao_PlanoLocacaoId",
@@ -414,6 +445,17 @@ namespace LockAi.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PropostaLocacao_UsuarioId",
                 table: "PropostaLocacao",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PropostaLocacaoPagamento_IdPropostaLocacao",
+                table: "PropostaLocacaoPagamento",
+                column: "IdPropostaLocacao",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PropostaLocacaoPagamento_UsuarioId",
+                table: "PropostaLocacaoPagamento",
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
@@ -469,7 +511,7 @@ namespace LockAi.Migrations
                 name: "PlanosLocacoesObjeto");
 
             migrationBuilder.DropTable(
-                name: "PropostaLocacao");
+                name: "PropostaLocacaoPagamento");
 
             migrationBuilder.DropTable(
                 name: "Requerimentos");
@@ -478,13 +520,16 @@ namespace LockAi.Migrations
                 name: "UsuarioImagens");
 
             migrationBuilder.DropTable(
+                name: "PropostaLocacao");
+
+            migrationBuilder.DropTable(
+                name: "TiposRequerimento");
+
+            migrationBuilder.DropTable(
                 name: "Objetos");
 
             migrationBuilder.DropTable(
                 name: "PlanosLocacao");
-
-            migrationBuilder.DropTable(
-                name: "TiposRequerimento");
 
             migrationBuilder.DropTable(
                 name: "TiposObjeto");

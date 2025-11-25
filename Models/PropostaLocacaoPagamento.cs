@@ -16,5 +16,7 @@ namespace LockAi.Models
         public DateTime DtConferencia { get; set; }
         public int IdUsuarioConferencia { get; set; }
         public SituacaoPropostaLocacaoPagamento Situacao { get; set; }
+        public int IdPropostaLocacao { get; set; }
+        public PropostaLocacao PropostaLocacao { get; set; }
     }
 }
