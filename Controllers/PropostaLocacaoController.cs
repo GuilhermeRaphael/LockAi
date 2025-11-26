@@ -113,6 +113,57 @@ namespace LockAi.Controllers
             }
         }
 
+        [HttpPut("aprovar/{id}")]
+        public async Task<IActionResult> AprovarPropostaLocacao(int id)
+        {
+            try
+            {
+                var proposta = await _context.PropostaLocacao
+                .Include(p => p.Objeto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+
+                    if (proposta == null)
+                        return NotFound("Proposta não encontrada.");
+
+                    if (proposta.Situacao == SituacaoPropostaEnum.Aprovada)
+                        return BadRequest("Essa proposta já foi aprovada.");
+
+                    
+                    proposta.Situacao = SituacaoPropostaEnum.Aprovada;
+                    var locacao = new Locacao
+                    {
+                        IdPropostaLocacao = proposta.Id,      
+                        IdUsuario = proposta.IdUsuario,       
+                        DataInicio = DateTime.UtcNow,         
+                        DataFim = DateTime.UtcNow.AddMonths(1),
+                        Valor = proposta.Valor,               
+                        Situacao = SituacaoLocacaoEnum.Ativa, 
+                        DataSituacao = DateTime.UtcNow,
+                        IdUsuarioSituacao = proposta.IdUsuario 
+                    };
+
+                    _context.Locacoes.Add(locacao);
+
+                    proposta.Objeto.Situacao = SituacaoObjetoEnum.Locado;
+                    proposta.Objeto.DtAtualizao = DateTime.Now;
+                    proposta.Objeto.IdUsuarioAtualizacao = proposta.IdUsuario;
+
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new 
+                    {
+                        Message = "Proposta aprovada e locação gerada automaticamente.",
+                        LocacaoGerada = locacao
+                    });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao aprovar proposta de locação: {ex.Message}");                
+            }
+        }
+
+
         
 
         
