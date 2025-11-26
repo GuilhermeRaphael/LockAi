@@ -28,6 +28,9 @@ namespace LockAi.Data
         public DbSet<PlanoLocacaoObjeto> PlanosLocacoesObjeto { get; set; }
         public DbSet<PropostaLocacao> PropostaLocacao { get; set; }
         public DbSet<PropostaLocacaoPagamento> PropostaLocacaoPagamento { get; set; }
+        public DbSet<Locacao> Locacoes { get; set; }
+        public DbSet<LocacaoParceiro> LocacoesParceiro { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -116,42 +119,44 @@ namespace LockAi.Data
                     UsuarioId = 1
                 }
             );
-/*
-            modelBuilder.Entity<PropostaLocacaoPagamento>().HasData(
-    new PropostaLocacaoPagamento
-    {
-        Id = 1,
-        Data = new DateTime(2025, 9, 9),
-        Comprovante = "comprovante1.jpg",
-        IdUsuario = 1, // ← nome deve bater com o modelo
-        DtConferencia = new DateTime(2025, 9, 10),
-        IdUsuarioConferencia = 1,
-        Situacao = SituacaoPropostaLocacaoPagamento.Aprovado,
-        IdPropostaLocacao = 1
-    }
-);
 
-            
-            modelBuilder.Entity<PropostaLocacao>().HasData(
-                new PropostaLocacao
+
+            /*
+                        modelBuilder.Entity<PropostaLocacaoPagamento>().HasData(
+                new PropostaLocacaoPagamento
                 {
                     Id = 1,
                     Data = new DateTime(2025, 9, 9),
-                    IdUsuario = 1,
-                    IdObjeto = 1,
-                    IdPlanoLocacao = 1,
-                    DtInicio = new DateTime(2025, 9, 10),
-                    DtFim = new DateTime(2025, 10, 10),
-                    DtValidade = new DateTime(2025, 9, 15),
-                    Valor = 59.90f,
-                    Situacao = SituacaoPropostaEnum.Aprovada,
-                    DtSituacao = new DateTime(2025, 9, 10),
-                    IdUsuarioSituacao = 1
+                    Comprovante = "comprovante1.jpg",
+                    IdUsuario = 1, // ← nome deve bater com o modelo
+                    DtConferencia = new DateTime(2025, 9, 10),
+                    IdUsuarioConferencia = 1,
+                    Situacao = SituacaoPropostaLocacaoPagamento.Aprovado,
+                    IdPropostaLocacao = 1
                 }
             );
 
 
-*/
+                        modelBuilder.Entity<PropostaLocacao>().HasData(
+                            new PropostaLocacao
+                            {
+                                Id = 1,
+                                Data = new DateTime(2025, 9, 9),
+                                IdUsuario = 1,
+                                IdObjeto = 1,
+                                IdPlanoLocacao = 1,
+                                DtInicio = new DateTime(2025, 9, 10),
+                                DtFim = new DateTime(2025, 10, 10),
+                                DtValidade = new DateTime(2025, 9, 15),
+                                Valor = 59.90f,
+                                Situacao = SituacaoPropostaEnum.Aprovada,
+                                DtSituacao = new DateTime(2025, 9, 10),
+                                IdUsuarioSituacao = 1
+                            }
+                        );
+
+
+            */
             // Relacionamentos
             modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.RepresentanteLegal)
