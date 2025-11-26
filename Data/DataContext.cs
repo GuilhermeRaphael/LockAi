@@ -240,6 +240,17 @@ namespace LockAi.Data
             .Property(p => p.IdPlanoLocacao)
             .IsRequired();
 
+            modelBuilder.Entity<Locacao>()
+            .HasOne(e => e.LocacaoParceiro)
+            .WithOne(e => e.Locacao)
+            .HasForeignKey<LocacaoParceiro>(e => e.IdLocacao)
+            .IsRequired();
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.Locacao)
+                .WithOne(e => e.Usuario)
+                .HasForeignKey(e => e.IdUsuario)
+                .IsRequired(false);
 
         }
     }
