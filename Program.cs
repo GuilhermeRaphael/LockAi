@@ -18,8 +18,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSomee", policy =>
-        policy.WithOrigins("http://lockai.somee.com")
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins("http://localhost:5173")
               .AllowAnyMethod()
               .AllowAnyHeader());
 });
@@ -28,7 +28,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("AllowSomee");
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
