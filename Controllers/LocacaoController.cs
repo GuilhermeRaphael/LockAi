@@ -21,26 +21,6 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddLocacao(Locacao locacao)
-        {
-            try
-            {
-                locacao.DataInicio = DateTime.Now;
-                var usuario = await GetUsuarioLogadoAsync();
-                locacao.IdUsuarioSituacao = usuario.Id;
-                locacao.Situacao = SituacaoLocacaoEnum.Ativa;
-                locacao.DataSituacao = DateTime.Now;
-
-                _context.Locacoes.Add(locacao);
-                await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetLocacaoById), new { id = locacao.Id }, locacao);
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(500, $"Erro ao adicionar nova Locacao: {ex.Message}");
-            }
-        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetLocacaoById(int id)
@@ -66,12 +46,24 @@ namespace LockAi.Controllers
         {
             try
             {
-                var locacaoId = await _context.Locacoes.FindAsync(id);
+                var locacaoId = await _context.Locacoes
+                    .Include(l => l.PropostaLocacao)
+                    .ThenInclude(p => p.Objeto)
+                    .FirstOrDefaultAsync(l => l.Id == id);
 
                 if (locacaoId == null)
                     return NotFound($"Locacao {id} não encontrada.");
+                if (locacaoId.Situacao == SituacaoLocacaoEnum.Cancelada)
+                return BadRequest("A locação já está cancelada.");
 
                 locacaoId.Situacao = SituacaoLocacaoEnum.Cancelada;
+
+                var objeto = locacaoId.PropostaLocacao.Objeto;
+                objeto.Situacao = SituacaoObjetoEnum.Revisao;
+                objeto.DtAtualizao = DateTime.Now;
+                var usuario = await GetUsuarioLogadoAsync();
+                objeto.IdUsuarioAtualizacao = usuario.Id;
+
                 await _context.SaveChangesAsync();
 
                 return Ok(locacaoId);

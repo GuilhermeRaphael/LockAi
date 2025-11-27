@@ -21,23 +21,39 @@ namespace LockAi.Controllers
             _context = context;
         }
 
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPlanoLocacaoById(int id)
         {
             try
             {
-                PlanoLocacao planolocacao = await _context.PlanosLocacao.FirstOrDefaultAsync(r => r.Id == id);
+                var plano = await _context.PlanosLocacao
+                    .Include(t => t.UsuarioInclusao)
+                    .Include(t => t.UsuarioAtualizacao)
+                    .Include(t => t.PlanoLocacaoObjetos)
+                    .FirstOrDefaultAsync(r => r.Id == id);
 
-                if (planolocacao == null)
-                    return NotFound("PlanoLocacão não encontrado.");
+                if (plano == null)
+                    return NotFound("Plano de locação não encontrado.");
 
-                return Ok(planolocacao);
+                
+                if (DateTime.Now > plano.DtFim && plano.Situacao != SituacaoPlanoLocacao.Inativo)
+                {
+                    plano.Situacao = SituacaoPlanoLocacao.Inativo;
+                    plano.DtAtualizacao = DateTime.Now;
+
+                    _context.PlanosLocacao.Update(plano);
+                    await _context.SaveChangesAsync();
+                }
+
+                return Ok(plano);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                return BadRequest($"Erro ao buscar o plano locacão{ex.Message}");
+                return BadRequest($"Erro ao buscar o plano locação: {ex.Message}");
             }
         }
+
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetPlanoLocacao()
@@ -50,7 +66,23 @@ namespace LockAi.Controllers
                         .Include(t => t.PlanoLocacaoObjetos)
                         .ToListAsync();
 
+                foreach (var plano in lista)
+                {
+                    if (DateTime.Now > plano.DtFim && plano.Situacao != SituacaoPlanoLocacao.Inativo)
+                    {
+                        plano.Situacao = SituacaoPlanoLocacao.Inativo;
+                        plano.DtAtualizacao = DateTime.Now;
+                        // ajuste opcional:
+                        // plano.IdUsuarioAtualizacao = ??? // aqui só se você souber o usuário
+
+                        _context.PlanosLocacao.Update(plano);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
                 return Ok(lista);
+
+                
             }
             catch (System.Exception ex)
             {

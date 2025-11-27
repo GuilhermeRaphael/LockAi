@@ -11,6 +11,7 @@ namespace LockAi.Models
         public int Id { get; set; }
         public DateTime Momento { get; set; }
         public int IdLocacao { get; set; }
+        public Locacao? Locacao { get; set; }
         public string Observacao { get; set; }
         public SituacaoRequerimentoEnum Situacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
