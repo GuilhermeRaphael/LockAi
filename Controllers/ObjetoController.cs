@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LockAi.Data;
 using LockAi.Models;
 using LockAi.Models.Enuns;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ConsultarObjetos()
         {
@@ -28,6 +30,7 @@ namespace LockAi.Controllers
             return Ok(Objetos);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> ConsultarObjetoPorId(int id)
         {
@@ -48,7 +51,7 @@ namespace LockAi.Controllers
             }
         }
 
-
+        [Authorize(Policy = "Gestor")]
         [HttpPost]
         public async Task<IActionResult> AdicionarObjeto(Objeto novoObjeto)
         {
@@ -65,6 +68,7 @@ namespace LockAi.Controllers
             }
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirObjeto(int id)
         {
@@ -86,6 +90,7 @@ namespace LockAi.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("reservar/{id}")]
         public async Task<IActionResult> ReservarObjeto(int id)
         {
@@ -113,7 +118,7 @@ namespace LockAi.Controllers
             }
         }
 
-
+        [Authorize(Policy = "Gestor")]
         [HttpPut("liberar/{id}")]
         public async Task<IActionResult> LiberarObjeto(int id)
         {
@@ -143,6 +148,7 @@ namespace LockAi.Controllers
             }
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpPut("bloquear/{id}")]
         public async Task<IActionResult> DesativarObjeto(int id)
         {
@@ -169,37 +175,6 @@ namespace LockAi.Controllers
             catch (Exception ex)
             {
                 return BadRequest($"Erro ao desativar objeto: {ex.Message}");
-            }
-        }
-
-        [HttpPost("teste")]
-        public async Task<IActionResult> CriarObjetoTeste()
-        {
-            try
-            {
-                var objetoTeste = new Objeto
-                {
-                    Nome = "Cadeado Inteligente",
-                    Descricao = "Objeto de teste para validação de modelo",
-                    LocalidadePrimaria = "São Paulo",
-                    LocalidadeSecundaria = "Zona Sul",
-                    LocalidadeTercearia = "Bloco A",
-                    Situacao = SituacaoObjetoEnum.Ativo,
-                    IdTipoObjeto = 1, // Supondo que esse tipo exista
-                    DtInclusao = DateTime.Now,
-                    IdUsuarioInclusao = 1, // Supondo que esse usuário exista
-                    DtAtualizao = DateTime.Now,
-                    IdUsuarioAtualizacao = 1
-                };
-
-                _context.Objetos.Add(objetoTeste);
-                await _context.SaveChangesAsync();
-
-                return Ok(objetoTeste);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erro ao criar objeto de teste: {ex.Message}");
             }
         }
     }

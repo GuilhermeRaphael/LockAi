@@ -7,6 +7,12 @@ using LockAi.Data;
 using LockAi.Dtos;
 using LockAi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+
 
 
 namespace LockAi.Controllers
@@ -16,12 +22,16 @@ namespace LockAi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IConfiguration _config;
 
-        public AuthController(DataContext context)
+
+        public AuthController(DataContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
-
+        
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
@@ -35,7 +45,38 @@ namespace LockAi.Controllers
                     return Unauthorized("Login ou senha inválidos.");
                 }
 
-                return Ok(new { message = "Login realizado com sucesso", usuario.Id });
+                var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
+
+                var claims = new[]
+                  {
+                    new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                    new Claim(ClaimTypes.Name, usuario.Login),
+                    new Claim("tipo", usuario.TipoUsuarioId.ToString())
+                  };
+
+                var creds = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256
+                );
+
+                var token = new JwtSecurityToken(
+                    expires: DateTime.UtcNow.AddHours(2),
+                    claims: claims,
+                    signingCredentials: creds
+                );
+
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+                return Ok(new
+                {
+                    message = "Login realizado com sucesso",
+                    token = tokenString,
+                    usuario = new
+                    {
+                        usuario.Id,
+                        usuario.Login
+                    }
+                });
             }
             catch (Exception ex)
             {
