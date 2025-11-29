@@ -7,9 +7,12 @@ using LockAi.Models;
 using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class PlanoLocacaoObjetoController : ControllerBase
@@ -21,6 +24,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
+        
         [HttpGet("GetId/{idPlanoLocacao}/{idTipoObjeto}")]
         public async Task<ActionResult<PlanoLocacaoObjeto>> GetPlanoLocacaoObjetoById(int idPlanoLocacao, int idTipoObjeto)
         {
@@ -42,7 +46,7 @@ namespace LockAi.Controllers
         }
         
         
-        
+        [Authorize(Policy = "Gestor")]
         [HttpPost]
         public async Task<IActionResult> AddPlanoLocacaoObjeto(PlanoLocacaoObjeto novoObjeto)
         {
@@ -86,11 +90,6 @@ namespace LockAi.Controllers
             }
         }
 
-        private async Task<Usuario> GetUsuarioLogadoAsync()
-        {
-            return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto, mudar com a implementação do JWT
-        }
-
         [HttpGet("GetIdTipoObjeto/{idTipoObjeto}")]
         public async Task<IActionResult> GetIdTipoObjetoyId(int idTipoObjeto)
         {
@@ -113,6 +112,7 @@ namespace LockAi.Controllers
             }
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpDelete("plano/{idPlano}/tipo/{idTipoObjeto}")]
         public async Task<IActionResult> DeletePlanoTipo(int idPlano, int idTipoObjeto)
         {
@@ -140,6 +140,18 @@ namespace LockAi.Controllers
             {
                 return StatusCode(500, new { mensagem = "Erro interno no servidor.", detalhe = ex.Message });
             }
+        }
+
+        private async Task<Usuario> GetUsuarioLogadoAsync()
+        {
+            var userIdClaim = User.FindFirst("id");
+
+            if (userIdClaim == null)
+                return null;
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         

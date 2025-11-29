@@ -9,10 +9,13 @@ using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using Microsoft.AspNetCore.Authorization;
+
 
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TipoRequerimentoController : ControllerBase
@@ -62,6 +65,7 @@ namespace LockAi.Controllers
             }
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> AddTipoRequerimento(TipoRequerimento novoTipoRequerimento)
         {
@@ -86,12 +90,7 @@ namespace LockAi.Controllers
             }
         }
 
-        private async Task<Usuario> GetUsuarioLogadoAsync()
-        {
-            return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto, mudar com a implementação do JWT
-        }
-
-
+        [Authorize(Policy = "Gestor")]
         [HttpPatch("AlterarValor/{idTipo}")]
         public async Task<IActionResult> PatchAlterarValor(int idTipo, [FromBody] AlterarValorDtos dto)
         {
@@ -115,7 +114,7 @@ namespace LockAi.Controllers
             }
         }
 
-        // ENDPOINT excluirLogico.
+        [Authorize(Policy = "Gestor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirTipoRequerimento(int id)
         {
@@ -146,6 +145,18 @@ namespace LockAi.Controllers
             {
                 return StatusCode(500, $"Erro ao excluir tipo de requerimento: {ex.Message}");
             }
+        }
+
+        private async Task<Usuario> GetUsuarioLogadoAsync()
+        {
+            var userIdClaim = User.FindFirst("id");
+
+            if (userIdClaim == null)
+                return null;
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == userId);
         }
     }
 }

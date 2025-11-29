@@ -7,9 +7,12 @@ using LockAi.Data;
 using LockAi.Models;
 using LockAi.Models.Enuns;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class PropostaLocacaoPagamentoController : ControllerBase
@@ -21,6 +24,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpPatch("{id}/confirmar-pagamento")]
         public async Task<IActionResult> AvaliarPagamento(int id,[FromBody] SituacaoPropostaLocacaoPagamento novaSituacao,[FromQuery] int idGestor)
         {

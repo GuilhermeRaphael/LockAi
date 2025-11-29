@@ -6,9 +6,12 @@ using LockAi.Data;
 using LockAi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TipoUsuarioController : ControllerBase
@@ -20,6 +23,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTipoUsuarioById(int id)
         {
@@ -42,8 +46,9 @@ namespace LockAi.Controllers
                 return BadRequest($"Erro ao buscar tipo de usuário: {ex.Message}");
             }
         }
-
-        [HttpGet("{GetAll}")] // Lista todos os representates legais
+        
+        [Authorize(Policy = "Gestor")]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetTiposUsuario()
         {
             try

@@ -8,9 +8,12 @@ using LockAi.Models;
 using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class PropostaLocacaoController : ControllerBase
@@ -63,11 +66,16 @@ namespace LockAi.Controllers
             }
         }
 
+       [Authorize(Policy = "Usuario")]
        [HttpPost]
         public async Task<IActionResult> CriarProposta([FromBody] PropostaLocacao propostaDto)
         {
             try
             {
+                var usuarioLogado = await GetUsuarioLogadoAsync();
+                if (usuarioLogado == null)
+                return Unauthorized("Usuário não identificado.");
+
                 var plano = await _context.PlanosLocacao
                     .FirstOrDefaultAsync(p => p.Id == propostaDto.IdPlanoLocacao);
 
@@ -77,6 +85,7 @@ namespace LockAi.Controllers
                 if (plano.Situacao == SituacaoPlanoLocacao.Inativo || plano.Situacao == SituacaoPlanoLocacao.Pendente)
                     return BadRequest("Este plano não pode ser utilizado.");
 
+                propostaDto.IdUsuario = usuarioLogado.Id;
                 propostaDto.Valor = plano.Valor;
                 propostaDto.DtInicio = plano.DtInicio;
                 propostaDto.DtFim = plano.DtFim;
@@ -107,8 +116,6 @@ namespace LockAi.Controllers
                 return StatusCode(500, $"Erro ao criar proposta: {ex.Message}");
             }
         }
-
-
 
         [HttpPatch("{id}/cancelar")]
         public async Task<IActionResult> CancelarPropostaLocacao(int id)
@@ -151,6 +158,7 @@ namespace LockAi.Controllers
             }
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpPut("aprovar/{id}")]
         public async Task<IActionResult> AprovarPropostaLocacao(int id)
         {
@@ -200,9 +208,16 @@ namespace LockAi.Controllers
             }
         }
 
+        private async Task<Usuario> GetUsuarioLogadoAsync()
+        {
+            var userIdClaim = User.FindFirst("id");
 
-        
+            if (userIdClaim == null)
+                return null;
 
-        
+            int userId = int.Parse(userIdClaim.Value);
+
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }

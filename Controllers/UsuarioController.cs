@@ -12,8 +12,11 @@ using BCrypt.Net;
 using Microsoft.AspNetCore.Authorization;
 
 
+
+
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsuarioController : ControllerBase
@@ -147,7 +150,7 @@ namespace LockAi.Controllers
             }
         }
 
-         [Authorize(Policy = "Gestor")]
+        [Authorize(Policy = "Gestor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirUsuario(int id)
         {
@@ -173,18 +176,18 @@ namespace LockAi.Controllers
 
         public void ValidarUsuario(Usuario usuario)
         {
-            var atual = DateTime.Today; // Pega a data atual
-            var idade = atual.Year - usuario.DtNascimento.Year; // Calcula idade pelo ano
+            var atual = DateTime.Today; 
+            var idade = atual.Year - usuario.DtNascimento.Year;
 
-            if (usuario.DtNascimento.Date > atual.AddYears(-idade)) // Ajusta se ainda não fez aniversário este ano
+            if (usuario.DtNascimento.Date > atual.AddYears(-idade)) 
                 idade--;
 
-            if (idade < 18 && usuario.RepresentanteLegalId == null) // Se menor de 18 e sem representante
+            if (idade < 18 && usuario.RepresentanteLegalId == null)
             {
                 throw new Exception("Usuários menores de 18 anos devem ter representante legal.");
             }
 
-            if (idade >= 18 && usuario.RepresentanteLegalId != null) // Se maior ou igual a 18 com representante
+            if (idade >= 18 && usuario.RepresentanteLegalId != null) 
             {
                 throw new Exception("Usuários maiores de 18 anos não devem ter representante legal.");
             }
