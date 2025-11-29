@@ -74,7 +74,8 @@ namespace LockAi.Controllers
                     usuario = new
                     {
                         usuario.Id,
-                        usuario.Login
+                        usuario.Login,
+                        tipoUsuarioId = usuario.TipoUsuarioId
                     }
                 });
             }
