@@ -94,7 +94,7 @@ namespace LockAi.Controllers
                 propostaDto.Data = DateTime.UtcNow;
                 propostaDto.Situacao = SituacaoPropostaEnum.EmAnalise;
                 propostaDto.DtSituacao = DateTime.UtcNow;
-                propostaDto.DtValidade = propostaDto.DtFim; // ou outra regra
+                propostaDto.DtValidade = propostaDto.DtFim; 
 
 
                 var objeto = await _context.Objetos.FindAsync(propostaDto.IdObjeto);
@@ -104,6 +104,8 @@ namespace LockAi.Controllers
                 objeto.Situacao = SituacaoObjetoEnum.Reservado;
                 objeto.DtAtualizao = DateTime.UtcNow;
                 objeto.IdUsuarioAtualizacao = propostaDto.IdUsuario;
+                
+                _context.Objetos.Update(objeto);
 
                 _context.PropostaLocacao.Add(propostaDto);
                 await _context.SaveChangesAsync();

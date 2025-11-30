@@ -18,7 +18,7 @@ builder.Services.AddControllers()
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoAzure")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoLocal")));
 
 builder.Services.AddCors(options =>
 {
