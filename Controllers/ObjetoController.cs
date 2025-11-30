@@ -24,12 +24,16 @@ namespace LockAi.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> ConsultarObjetos()
         {
             try
             {
-                var lista = await _context.Objetos.ToListAsync();
+               var lista = await _context.Objetos
+                .Include(o => o.UsuarioInclusao)
+                .Include(o => o.UsuarioAtualizacao)
+                .ToListAsync();
+
                 return Ok(lista);
             }
             catch(Exception ex)

@@ -19,9 +19,10 @@ namespace LockAi.Models
         public TipoObjeto? TipoObjeto { get; set; }
         public DateTime DtInclusao { get; set; }
         public int IdUsuarioInclusao { get; set; }
+        public Usuario UsuarioInclusao {get; set;} // navegação
         public DateTime DtAtualizao { get; set; }
         public int IdUsuarioAtualizacao { get; set; }
-
+        public Usuario UsuarioAtualizacao {get; set;} // navegação
         public string PosicaoArmario { get; set; }
         public ICollection<PropostaLocacao>? PropostaLocacao { get; set; }
     }
