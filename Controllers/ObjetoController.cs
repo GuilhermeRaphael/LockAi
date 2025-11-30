@@ -57,6 +57,8 @@ namespace LockAi.Controllers
         {
             try
             {
+                 ValidarPosicao(novoObjeto.PosicaoArmario);    
+
                 _context.Objetos.Add(novoObjeto);
                 await _context.SaveChangesAsync();
 
@@ -177,5 +179,17 @@ namespace LockAi.Controllers
                 return BadRequest($"Erro ao desativar objeto: {ex.Message}");
             }
         }
+
+        public void ValidarPosicao(string posicao)
+        {
+            if (string.IsNullOrWhiteSpace(posicao))
+                throw new Exception("A posição é obrigatória. Use: alto, medio ou baixo.");
+
+            var validas = new[] { "alto", "medio", "baixo" };
+
+            if (!validas.Contains(posicao.ToLower()))
+            throw new Exception("Posição inválida. Use: alto, medio ou baixo.");
+        }
+
     }
 }

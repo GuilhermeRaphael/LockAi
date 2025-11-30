@@ -22,6 +22,7 @@ namespace LockAi.Models
         public DateTime DtAtualizao { get; set; }
         public int IdUsuarioAtualizacao { get; set; }
 
+        public string PosicaoArmario { get; set; }
         public ICollection<PropostaLocacao>? PropostaLocacao { get; set; }
     }
 }

@@ -61,7 +61,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("IdUsuario");
 
-                    b.ToTable("Locacoes");
+                    b.ToTable("Locacoes", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.LocacaoParceiro", b =>
@@ -100,7 +100,7 @@ namespace LockAi.Migrations
                     b.HasIndex("IdLocacao")
                         .IsUnique();
 
-                    b.ToTable("LocacoesParceiro");
+                    b.ToTable("LocacoesParceiro", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.Objeto", b =>
@@ -153,7 +153,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("IdTipoObjeto");
 
-                    b.ToTable("Objetos");
+                    b.ToTable("Objetos", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.PlanoLocacao", b =>
@@ -214,7 +214,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("PlanosLocacao");
+                    b.ToTable("PlanosLocacao", (string)null);
 
                     b.HasData(
                         new
@@ -263,7 +263,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("IdTipoObjeto");
 
-                    b.ToTable("PlanosLocacoesObjeto");
+                    b.ToTable("PlanosLocacoesObjeto", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.PropostaLocacao", b =>
@@ -315,7 +315,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("IdUsuario");
 
-                    b.ToTable("PropostaLocacao");
+                    b.ToTable("PropostaLocacao", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.PropostaLocacaoPagamento", b =>
@@ -358,7 +358,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("PropostaLocacaoPagamento");
+                    b.ToTable("PropostaLocacaoPagamento", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.RepresentanteLegal", b =>
@@ -387,7 +387,7 @@ namespace LockAi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RepresentanteLegal");
+                    b.ToTable("RepresentanteLegal", (string)null);
 
                     b.HasData(
                         new
@@ -457,7 +457,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Requerimentos");
+                    b.ToTable("Requerimentos", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.TipoObjeto", b =>
@@ -499,7 +499,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("UsuarioInclusaoId");
 
-                    b.ToTable("TiposObjeto");
+                    b.ToTable("TiposObjeto", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.TipoRequerimento", b =>
@@ -548,7 +548,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("UsuarioInclusaoId");
 
-                    b.ToTable("TiposRequerimento");
+                    b.ToTable("TiposRequerimento", (string)null);
 
                     b.HasData(
                         new
@@ -579,7 +579,7 @@ namespace LockAi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposUsuario");
+                    b.ToTable("TiposUsuario", (string)null);
 
                     b.HasData(
                         new
@@ -655,7 +655,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("TipoUsuarioId");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
 
                     b.HasData(
                         new
@@ -698,7 +698,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("UsuarioImagens");
+                    b.ToTable("UsuarioImagens", (string)null);
                 });
 
             modelBuilder.Entity("LockAi.Models.Locacao", b =>
