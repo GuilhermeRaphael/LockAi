@@ -82,7 +82,6 @@ namespace LockAi.Controllers
                 if (objeto == null)
                     return BadRequest(new { mensagem = "Objeto não encontrado." });
 
-                // 2️⃣ Verificar se o objeto já está reservado
                 if (objeto.Situacao == SituacaoObjetoEnum.Reservado)
                     return BadRequest(new { mensagem = "Objeto já está reservado." });
 
@@ -92,7 +91,6 @@ namespace LockAi.Controllers
                 objeto.Situacao = SituacaoObjetoEnum.Reservado;
                 _context.Objetos.Update(objeto);
 
-                // 4️⃣ Criar a proposta
                 var proposta = new PropostaLocacao
                 {
                     IdObjeto = dto.IdObjeto,
@@ -121,6 +119,7 @@ namespace LockAi.Controllers
                 return StatusCode(500, new { mensagem = "Erro interno", erro = ex.Message });
             }
         }
+
 
 
         [HttpPatch("{id}/cancelar")]
