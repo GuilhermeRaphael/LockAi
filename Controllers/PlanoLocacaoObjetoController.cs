@@ -8,6 +8,7 @@ using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace LockAi.Controllers
@@ -144,7 +145,7 @@ namespace LockAi.Controllers
 
         private async Task<Usuario> GetUsuarioLogadoAsync()
         {
-            var userIdClaim = User.FindFirst("id");
+            var userIdClaim =  User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
                 return null;
