@@ -68,59 +68,67 @@ namespace LockAi.Controllers
         }
 
        [Authorize(Policy = "Usuario")]
-       [HttpPost]
-        public async Task<IActionResult> CriarProposta([FromBody] PropostaLocacao propostaDto)
+[HttpPost]
+public async Task<IActionResult> CriarProposta([FromBody] EnviarPropostaDto dto)
+{
+    try
+    {
+        var usuarioLogado = await GetUsuarioLogadoAsync();
+        if (usuarioLogado == null)
+            return Unauthorized("Usuário não identificado.");
+
+        var plano = await _context.PlanosLocacao
+            .FirstOrDefaultAsync(p => p.Id == dto.IdPlanoLocacao);
+
+        if (plano == null)
+            return NotFound("Plano de locação não encontrado.");
+
+        if (plano.Situacao == SituacaoPlanoLocacao.Inativo ||
+            plano.Situacao == SituacaoPlanoLocacao.Pendente)
+            return BadRequest("Este plano não pode ser utilizado.");
+
+        var objeto = await _context.Objetos.FindAsync(dto.IdObjeto);
+        if (objeto == null)
+            return NotFound("Objeto não encontrado.");
+
+        
+        var proposta = new PropostaLocacao
         {
-            try
-            {
-                var usuarioLogado = await GetUsuarioLogadoAsync();
-                if (usuarioLogado == null)
-                return Unauthorized("Usuário não identificado.");
+            IdPlanoLocacao = dto.IdPlanoLocacao,
+            IdObjeto = dto.IdObjeto,
+            IdUsuario = usuarioLogado.Id,   
+            Valor = plano.Valor,
+            DtInicio = plano.DtInicio,
+            DtFim = plano.DtFim,
+            Data = DateTime.UtcNow,
+            Situacao = SituacaoPropostaEnum.EmAnalise,
+            DtSituacao = DateTime.UtcNow,
+            DtValidade = plano.DtFim
+        };
 
-                var plano = await _context.PlanosLocacao
-                    .FirstOrDefaultAsync(p => p.Id == propostaDto.IdPlanoLocacao);
+       
+        objeto.Situacao = SituacaoObjetoEnum.Reservado;
+        objeto.DtAtualizao = DateTime.UtcNow;
+        objeto.IdUsuarioAtualizacao = usuarioLogado.Id;
 
-                if (plano == null)
-                    return NotFound("Plano de locação não encontrado.");
+        _context.Objetos.Update(objeto);
+        _context.PropostaLocacao.Add(proposta);
 
-                if (plano.Situacao == SituacaoPlanoLocacao.Inativo || plano.Situacao == SituacaoPlanoLocacao.Pendente)
-                    return BadRequest("Este plano não pode ser utilizado.");
+        await _context.SaveChangesAsync();
 
-                propostaDto.IdUsuario = usuarioLogado.Id;
-                propostaDto.Valor = plano.Valor;
-                propostaDto.DtInicio = plano.DtInicio;
-                propostaDto.DtFim = plano.DtFim;
+        return Ok(new
+        {
+            Message = "Proposta criada com sucesso.",
+            Proposta = proposta
+        });
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500,
+            $"Erro ao criar proposta: {ex.Message} - INNER: {ex.InnerException?.Message}");
+    }
+    }
 
-                propostaDto.Data = DateTime.UtcNow;
-                propostaDto.Situacao = SituacaoPropostaEnum.EmAnalise;
-                propostaDto.DtSituacao = DateTime.UtcNow;
-                propostaDto.DtValidade = propostaDto.DtFim; 
-
-
-                var objeto = await _context.Objetos.FindAsync(propostaDto.IdObjeto);
-                if (objeto == null)
-                    return NotFound("Objeto não encontrado.");
-
-                objeto.Situacao = SituacaoObjetoEnum.Reservado;
-                objeto.DtAtualizao = DateTime.UtcNow;
-                objeto.IdUsuarioAtualizacao = propostaDto.IdUsuario;
-                
-                _context.Objetos.Update(objeto);
-
-                _context.PropostaLocacao.Add(propostaDto);
-                await _context.SaveChangesAsync();
-
-                return Ok(new
-                {
-                    Message = "Proposta criada com sucesso.",
-                    Proposta = propostaDto
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro ao criar proposta: {ex.Message} - INNER: {ex.InnerException?.Message}");
-            }
-        }
 
         [HttpPatch("{id}/cancelar")]
         public async Task<IActionResult> CancelarPropostaLocacao(int id)
