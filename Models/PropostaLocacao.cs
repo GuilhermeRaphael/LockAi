@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using LockAi.Models.Enuns;
@@ -11,6 +12,8 @@ namespace LockAi.Models
     {
         public int Id { get; set; }
         public DateTime Data { get; set; }
+        
+        [Column("UsuarioId")]
         public int IdUsuario { get; set; } //FK
         public Usuario? Usuario { get; set; } // Navegação
         public int IdObjeto { get; set; } // FK
