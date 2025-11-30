@@ -94,6 +94,8 @@ namespace LockAi.Controllers
                 propostaDto.Data = DateTime.UtcNow;
                 propostaDto.Situacao = SituacaoPropostaEnum.EmAnalise;
                 propostaDto.DtSituacao = DateTime.UtcNow;
+                propostaDto.DtValidade = propostaDto.DtFim; // ou outra regra
+
 
                 var objeto = await _context.Objetos.FindAsync(propostaDto.IdObjeto);
                 if (objeto == null)
