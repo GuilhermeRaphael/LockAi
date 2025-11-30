@@ -23,7 +23,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-        [Authorize]
+        [Authorize (Policy = "Gestor, Usuario")]
         [HttpGet("GetAll")]
         public async Task<IActionResult> ConsultarObjetos()
         {
@@ -46,7 +46,7 @@ namespace LockAi.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize (Policy = "Gestor, Usuario")]
         [HttpGet("{id}")]
         public async Task<IActionResult> ConsultarObjetoPorId(int id)
         {

@@ -32,8 +32,8 @@ namespace LockAi.Controllers
             try
             {
                 var listPlanoLocacaoObjeto = await _context.PlanosLocacoesObjeto
-                .FirstOrDefaultAsync(p => p.IdPlanoLocacao == idPlanoLocacao && p.IdTipoObjeto == idTipoObjeto);
-
+            .Where(p => p.IdPlanoLocacao == idPlanoLocacao && p.IdTipoObjeto == idTipoObjeto)
+            .ToListAsync();
 
                 if (listPlanoLocacaoObjeto == null)
                     return NotFound("Nenhuma associação encontrada para este plano.");

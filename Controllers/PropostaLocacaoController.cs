@@ -69,58 +69,59 @@ namespace LockAi.Controllers
 
        [Authorize(Policy = "Usuario")]
        [HttpPost]
-        public async Task<IActionResult> CriarProposta([FromBody] PropostaLocacao propostaDto)
+        public async Task<IActionResult> CriarProposta([FromBody] EnviarPropostaDto dto)
         {
             try
             {
                 var usuarioLogado = await GetUsuarioLogadoAsync();
-                if (usuarioLogado == null)
-                return Unauthorized("Usuário não identificado.");
+                 if (usuarioLogado == null)
+                    return Unauthorized(new { mensagem = "Usuário não autenticado." });
 
-                var plano = await _context.PlanosLocacao
-                    .FirstOrDefaultAsync(p => p.Id == propostaDto.IdPlanoLocacao);
+                var objeto = await _context.Objetos.FindAsync(dto.IdObjeto);
 
-                if (plano == null)
-                    return NotFound("Plano de locação não encontrado.");
-
-                if (plano.Situacao == SituacaoPlanoLocacao.Inativo || plano.Situacao == SituacaoPlanoLocacao.Pendente)
-                    return BadRequest("Este plano não pode ser utilizado.");
-
-                propostaDto.IdUsuario = usuarioLogado.Id;
-                propostaDto.Valor = plano.Valor;
-                propostaDto.DtInicio = plano.DtInicio;
-                propostaDto.DtFim = plano.DtFim;
-
-                propostaDto.Data = DateTime.UtcNow;
-                propostaDto.Situacao = SituacaoPropostaEnum.EmAnalise;
-                propostaDto.DtSituacao = DateTime.UtcNow;
-                propostaDto.DtValidade = propostaDto.DtFim; 
-
-
-                var objeto = await _context.Objetos.FindAsync(propostaDto.IdObjeto);
                 if (objeto == null)
-                    return NotFound("Objeto não encontrado.");
+                    return BadRequest(new { mensagem = "Objeto não encontrado." });
+
+                // 2️⃣ Verificar se o objeto já está reservado
+                if (objeto.Situacao == SituacaoObjetoEnum.Reservado)
+                    return BadRequest(new { mensagem = "Objeto já está reservado." });
+
+                if (objeto.Situacao == SituacaoObjetoEnum.Locado)
+                    return BadRequest(new { mensagem = "Objeto já está locado." });
 
                 objeto.Situacao = SituacaoObjetoEnum.Reservado;
-                objeto.DtAtualizao = DateTime.UtcNow;
-                objeto.IdUsuarioAtualizacao = propostaDto.IdUsuario;
-                
                 _context.Objetos.Update(objeto);
 
-                _context.PropostaLocacao.Add(propostaDto);
+                // 4️⃣ Criar a proposta
+                var proposta = new PropostaLocacao
+                {
+                    IdObjeto = dto.IdObjeto,
+                    IdPlanoLocacao = dto.IdPlanoLocacao,
+                    Data = DateTime.Now,
+                    DtInicio = DateTime.Now,
+                    DtFim = DateTime.Now.AddDays(30),
+                    DtValidade = DateTime.Now.AddDays(3),
+                    Situacao = SituacaoPropostaEnum.AguardandoPagamento,
+                    DtSituacao = DateTime.Now,
+                    IdUsuario = usuarioLogado.Id,            
+                    IdUsuarioSituacao = usuarioLogado.Id,  
+                };
+
+                _context.PropostaLocacao.Add(proposta);
                 await _context.SaveChangesAsync();
 
                 return Ok(new
                 {
-                    Message = "Proposta criada com sucesso.",
-                    Proposta = propostaDto
+                    mensagem = "Proposta criada e objeto reservado.",
+                    proposta
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao criar proposta: {ex.Message} - INNER: {ex.InnerException?.Message}");
+                return StatusCode(500, new { mensagem = "Erro interno", erro = ex.Message });
             }
         }
+
 
         [HttpPatch("{id}/cancelar")]
         public async Task<IActionResult> CancelarPropostaLocacao(int id)
