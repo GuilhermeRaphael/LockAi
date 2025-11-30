@@ -114,7 +114,7 @@ namespace LockAi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao criar proposta: {ex.Message}");
+                return StatusCode(500, $"Erro ao criar proposta: {ex.Message} - INNER: {ex.InnerException?.Message}");
             }
         }
 
