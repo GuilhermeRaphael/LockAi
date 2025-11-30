@@ -30,8 +30,6 @@ namespace LockAi.Controllers
             try
             {
                var lista = await _context.Objetos
-                .Include(o => o.UsuarioInclusao)
-                .Include(o => o.UsuarioAtualizacao)
                 .ToListAsync();
 
                 return Ok(lista);
