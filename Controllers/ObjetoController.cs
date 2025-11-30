@@ -23,7 +23,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-        [Authorize]
+        
         [HttpGet("GetAll")]
         public async Task<IActionResult> ConsultarObjetos()
         {
