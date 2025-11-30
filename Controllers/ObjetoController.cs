@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LockAi.Data;
 using LockAi.Models;
@@ -57,7 +58,14 @@ namespace LockAi.Controllers
         {
             try
             {
-                 ValidarPosicao(novoObjeto.PosicaoArmario);    
+                var usuario = await GetUsuarioLogadoAsync();
+                
+                if (usuario == null)
+                return Unauthorized("Usuário não identificado.");
+
+                novoObjeto.IdUsuarioInclusao = usuario.Id;
+                novoObjeto.IdUsuarioAtualizacao = usuario.Id;
+                ValidarPosicao(novoObjeto.PosicaoArmario);    
 
                 _context.Objetos.Add(novoObjeto);
                 await _context.SaveChangesAsync();
@@ -76,11 +84,19 @@ namespace LockAi.Controllers
         {
             try
             {
+                var usuario = await GetUsuarioLogadoAsync();
+
+                if (usuario == null)
+                return Unauthorized("Usuário não identificado.");
+
                 var objeto = await _context.Objetos.FindAsync(id);
                 if (objeto == null)
                 {
                     return NotFound($"Objeto com ID {id} não encontrado.");
                 }
+
+                objeto.IdUsuarioAtualizacao = usuario.Id;
+
                 _context.Objetos.Remove(objeto);
                 await _context.SaveChangesAsync();
 
@@ -98,6 +114,11 @@ namespace LockAi.Controllers
         {
             try
             {
+                var usuario = await GetUsuarioLogadoAsync();
+                
+                if (usuario == null)
+                return Unauthorized("Usuário não identificado.");
+
                 var objeto = await _context.Objetos.FindAsync(id);
                 if (objeto == null)
                 {
@@ -108,6 +129,7 @@ namespace LockAi.Controllers
                     return BadRequest("O objeto não pode ser RESERVADO!! O objeto ja esta locado ou reservado");
                 }
 
+                objeto.IdUsuarioAtualizacao = usuario.Id;
                 objeto.Situacao = SituacaoObjetoEnum.Reservado;
                 _context.Objetos.Update(objeto);
                 await _context.SaveChangesAsync();
@@ -126,8 +148,13 @@ namespace LockAi.Controllers
         {
             try
             {
-                var objeto = await _context.Objetos.FindAsync(id);
+                var usuario = await GetUsuarioLogadoAsync();
+                if (usuario == null)
+                {
+                    return Unauthorized("Usuário não identificado.");
+                }
 
+                var objeto = await _context.Objetos.FindAsync(id);
                 if (objeto == null)
                 {
                     return BadRequest($"O objeto com ID {id} não encontrado");
@@ -138,6 +165,7 @@ namespace LockAi.Controllers
                     return BadRequest("O objeto não pode ser liberado! Pois ja esta ativo ou locado por outra pessoa!");
                 }
 
+                objeto.IdUsuarioAtualizacao = usuario.Id;
                 objeto.Situacao = SituacaoObjetoEnum.Ativo;
                 _context.Objetos.Update(objeto);
                 await _context.SaveChangesAsync();
@@ -156,11 +184,14 @@ namespace LockAi.Controllers
         {
             try
             {
-                var objeto = await _context.Objetos.FindAsync(id);
+                var usuario = await GetUsuarioLogadoAsync();
+                if (usuario == null)
+                return Unauthorized("Usuário não identificado.");
 
+                var objeto = await _context.Objetos.FindAsync(id);
                 if (objeto == null)
                 {
-                    return BadRequest($"O objeto com ID {id} não encontrado");
+                    return NotFound($"O objeto com ID {id} não encontrado");
                 }
 
                 if (objeto.Situacao == SituacaoObjetoEnum.Desativado)
@@ -168,6 +199,7 @@ namespace LockAi.Controllers
                     return BadRequest($"O objeto com ID {id} ja esta desativado!");
                 }
 
+                objeto.IdUsuarioAtualizacao = usuario.Id;
                 objeto.Situacao = SituacaoObjetoEnum.Desativado;
                 _context.Objetos.Update(objeto);
                 await _context.SaveChangesAsync();
@@ -189,6 +221,18 @@ namespace LockAi.Controllers
 
             if (!validas.Contains(posicao.ToLower()))
             throw new Exception("Posição inválida. Use: alto, medio ou baixo.");
+        }
+
+         private async Task<Usuario> GetUsuarioLogadoAsync()
+        {
+            var userIdClaim =  User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+                return null;
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
     }

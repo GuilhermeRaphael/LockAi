@@ -100,10 +100,13 @@ namespace LockAi.Controllers
         {
             try
             {
+                var usuario = await GetUsuarioLogadoAsync();
+                if (usuario == null)
+                return Unauthorized("Usuário não identificado.");
+
                 novoPlanoLocacao.DtInclusao = DateTime.Now;
                 novoPlanoLocacao.DtAtualizacao = DateTime.Now;
 
-                var usuario = await GetUsuarioLogadoAsync();
                 novoPlanoLocacao.IdUsuarioInclusao = usuario.Id;
                 novoPlanoLocacao.IdUsuarioAtualizacao = usuario.Id;
 
@@ -123,6 +126,10 @@ namespace LockAi.Controllers
         {
             try
             {
+                var usuario = await GetUsuarioLogadoAsync();
+                if (usuario == null)
+                    return Unauthorized("Usuário logado não encontrado.");
+
                 PlanoLocacao planoLocacao = await _context.PlanosLocacao.FindAsync(id);
 
                 if (planoLocacao == null)
@@ -130,11 +137,6 @@ namespace LockAi.Controllers
 
                 planoLocacao.Situacao = SituacaoPlanoLocacao.Inativo;
                 planoLocacao.DtAtualizacao = DateTime.Now;
-
-                var usuario = await GetUsuarioLogadoAsync();
-                if (usuario == null)
-                    return StatusCode(500, "Usuário logado não encontrado.");
-
                 planoLocacao.IdUsuarioAtualizacao = usuario.Id;
 
                 _context.PlanosLocacao.Update(planoLocacao);
