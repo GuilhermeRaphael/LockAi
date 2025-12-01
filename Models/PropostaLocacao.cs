@@ -13,7 +13,6 @@ namespace LockAi.Models
         public int Id { get; set; }
         public DateTime Data { get; set; }
         public int IdUsuario { get; set; } //FK
-        public Usuario? Usuario { get; set; } // Navegação
         public int IdObjeto { get; set; } // FK
         public Objeto? Objeto { get; set; } // Navegação
         public int IdPlanoLocacao { get; set; } // FK
