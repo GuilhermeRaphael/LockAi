@@ -116,7 +116,7 @@ namespace LockAi.Controllers
                     Pagamento = new PropostaLocacaoPagamento
                     {
                     Data = new DateTime(2025, 9, 9),
-                    IdUsuario = 4,
+                    IdUsuario = usuarioLogado.Id,
                     DtConferencia = new DateTime(2025, 9, 10),
                     IdUsuarioConferencia = 1,
                     Situacao = SituacaoPropostaLocacaoPagamento.Aprovado,
