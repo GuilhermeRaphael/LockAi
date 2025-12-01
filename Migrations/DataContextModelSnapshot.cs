@@ -836,7 +836,7 @@ namespace LockAi.Migrations
             modelBuilder.Entity("LockAi.Models.Requerimento", b =>
                 {
                     b.HasOne("LockAi.Models.Locacao", "Locacao")
-                        .WithMany("Requerimento")
+                        .WithMany("Requerimentos")
                         .HasForeignKey("IdLocacao");
 
                     b.HasOne("LockAi.Models.TipoRequerimento", "TipoRequerimento")
@@ -916,7 +916,7 @@ namespace LockAi.Migrations
                 {
                     b.Navigation("LocacaoParceiro");
 
-                    b.Navigation("Requerimento");
+                    b.Navigation("Requerimentos");
                 });
 
             modelBuilder.Entity("LockAi.Models.Objeto", b =>

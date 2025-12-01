@@ -181,6 +181,13 @@ namespace LockAi.Data
                 .WithMany(u => u.Requerimentos)
                 .HasForeignKey(p => p.TipoRequerimentoId);
 
+                
+            modelBuilder.Entity<Requerimento>()
+                .HasOne(p => p.Locacao)
+                .WithMany(u => u.Requerimentos)
+                .HasForeignKey(p => p.IdLocacao).IsRequired();
+
+
             modelBuilder.Entity<PlanoLocacao>()
                 .HasOne(u => u.Usuario)
                 .WithMany(p => p.PlanosLocacao)
@@ -238,7 +245,7 @@ namespace LockAi.Data
                 .IsRequired(false);
 
             modelBuilder.Entity<Locacao>()
-                .HasMany(e => e.Requerimento)
+                .HasMany(e => e.Requerimentos)
                 .WithOne(e => e.Locacao)
                 .HasForeignKey(e => e.IdLocacao)
                 .IsRequired(false);

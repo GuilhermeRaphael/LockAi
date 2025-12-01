@@ -23,7 +23,7 @@ namespace LockAi.Models
         // 1:1
         [JsonIgnore]
         public LocacaoParceiro? LocacaoParceiro { get; set; }
-        public ICollection<Requerimento>? Requerimento { get; set; }
+        public ICollection<Requerimento>? Requerimentos { get; set; }
         
 
     }
