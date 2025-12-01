@@ -143,7 +143,9 @@ namespace LockAi.Controllers
                     message = "Erro ao salvar no banco.",
                     innerMessage = ex.InnerException?.Message,
                     exception = ex.Message,
-                    stackTrace = ex.StackTrace
+                    stackTrace = ex.StackTrace,
+                    usuarioLogado.Id
+                    
             });
             }   
             catch (Exception ex)
