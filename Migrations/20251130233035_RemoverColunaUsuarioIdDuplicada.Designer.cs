@@ -4,6 +4,7 @@ using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251130233035_RemoverColunaUsuarioIdDuplicada")]
+    partial class RemoverColunaUsuarioIdDuplicada
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,15 +303,13 @@ namespace LockAi.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("UsuarioId");
 
                     b.Property<int>("IdUsuarioSituacao")
                         .HasColumnType("int");
 
                     b.Property<int>("Situacao")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UsuarioId")
                         .HasColumnType("int");
 
                     b.Property<float>("Valor")
@@ -320,7 +321,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("IdPlanoLocacao");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("PropostaLocacao");
                 });
@@ -805,13 +806,17 @@ namespace LockAi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LockAi.Models.Usuario", null)
+                    b.HasOne("LockAi.Models.Usuario", "Usuario")
                         .WithMany("PropostaLocacao")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Objeto");
 
                     b.Navigation("PlanoLocacao");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("LockAi.Models.PropostaLocacaoPagamento", b =>
@@ -836,7 +841,7 @@ namespace LockAi.Migrations
             modelBuilder.Entity("LockAi.Models.Requerimento", b =>
                 {
                     b.HasOne("LockAi.Models.Locacao", "Locacao")
-                        .WithMany("Requerimentos")
+                        .WithMany("Requerimento")
                         .HasForeignKey("IdLocacao");
 
                     b.HasOne("LockAi.Models.TipoRequerimento", "TipoRequerimento")
@@ -916,7 +921,7 @@ namespace LockAi.Migrations
                 {
                     b.Navigation("LocacaoParceiro");
 
-                    b.Navigation("Requerimentos");
+                    b.Navigation("Requerimento");
                 });
 
             modelBuilder.Entity("LockAi.Models.Objeto", b =>

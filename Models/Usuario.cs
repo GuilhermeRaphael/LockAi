@@ -27,5 +27,8 @@ namespace LockAi.Models
         public ICollection<UsuarioImagem>? Imagens { get; set; }
         public ICollection<Requerimento>? Requerimentos { get; set; }
         public ICollection<PlanoLocacao>? PlanosLocacao { get; set; }
+        public ICollection<Locacao>? Locacao { get; set; }
+
+        public ICollection<PropostaLocacao>? PropostaLocacao { get; set; } 
     }
 }

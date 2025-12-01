@@ -19,6 +19,5 @@ namespace LockAi.Models
         public DateTime DtAtualizacao { get; set; }
         public int IdUsuarioAtualizacao { get; set; }
 
-
     }
 }

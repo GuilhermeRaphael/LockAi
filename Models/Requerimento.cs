@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LockAi.Models.Enuns;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LockAi.Models
 {
@@ -11,6 +12,7 @@ namespace LockAi.Models
         public int Id { get; set; }
         public DateTime Momento { get; set; }
         public int IdLocacao { get; set; }
+        public Locacao? Locacao { get; set; }
         public string Observacao { get; set; }
         public SituacaoRequerimentoEnum Situacao { get; set; }
         public DateTime DataAtualizacao { get; set; }

@@ -4,6 +4,7 @@ using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LockAi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251118011120_PropostaLocacaoPag")]
+    partial class PropostaLocacaoPag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,87 +24,6 @@ namespace LockAi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("LockAi.Models.Locacao", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DataFim")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataInicio")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataSituacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdPropostaLocacao")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUsuarioSituacao")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Situacao")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Valor")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdPropostaLocacao")
-                        .IsUnique();
-
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("Locacoes");
-                });
-
-            modelBuilder.Entity("LockAi.Models.LocacaoParceiro", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DtSituacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdLocacao")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdParceiro")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUsuarioSituacao")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdentificacaoParceiro")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NomeParceiro")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Situacao")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdLocacao")
-                        .IsUnique();
-
-                    b.ToTable("LocacoesParceiro");
-                });
 
             modelBuilder.Entity("LockAi.Models.Objeto", b =>
                 {
@@ -143,10 +65,6 @@ namespace LockAi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PosicaoArmario")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -305,10 +223,13 @@ namespace LockAi.Migrations
                     b.Property<int>("IdUsuarioSituacao")
                         .HasColumnType("int");
 
+                    b.Property<int>("PlanoLocacaoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Situacao")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsuarioId")
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.Property<float>("Valor")
@@ -318,7 +239,7 @@ namespace LockAi.Migrations
 
                     b.HasIndex("IdObjeto");
 
-                    b.HasIndex("IdPlanoLocacao");
+                    b.HasIndex("PlanoLocacaoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -458,13 +379,25 @@ namespace LockAi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdLocacao");
-
                     b.HasIndex("TipoRequerimentoId");
 
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Requerimentos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IdLocacao = 101,
+                            IdUsuarioAtualizacao = 0,
+                            Momento = new DateTime(2025, 8, 26, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Observacao = "Solicitação enviada pelo aluno João",
+                            Situacao = 3,
+                            TipoRequerimentoId = 1,
+                            UsuarioId = 1
+                        });
                 });
 
             modelBuilder.Entity("LockAi.Models.TipoObjeto", b =>
@@ -708,32 +641,6 @@ namespace LockAi.Migrations
                     b.ToTable("UsuarioImagens");
                 });
 
-            modelBuilder.Entity("LockAi.Models.Locacao", b =>
-                {
-                    b.HasOne("LockAi.Models.PropostaLocacao", "PropostaLocacao")
-                        .WithOne("Locacao")
-                        .HasForeignKey("LockAi.Models.Locacao", "IdPropostaLocacao");
-
-                    b.HasOne("LockAi.Models.Usuario", "Usuario")
-                        .WithMany("Locacao")
-                        .HasForeignKey("IdUsuario");
-
-                    b.Navigation("PropostaLocacao");
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("LockAi.Models.LocacaoParceiro", b =>
-                {
-                    b.HasOne("LockAi.Models.Locacao", "Locacao")
-                        .WithOne("LocacaoParceiro")
-                        .HasForeignKey("LockAi.Models.LocacaoParceiro", "IdLocacao")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Locacao");
-                });
-
             modelBuilder.Entity("LockAi.Models.Objeto", b =>
                 {
                     b.HasOne("LockAi.Models.TipoObjeto", "TipoObjeto")
@@ -801,17 +708,21 @@ namespace LockAi.Migrations
 
                     b.HasOne("LockAi.Models.PlanoLocacao", "PlanoLocacao")
                         .WithMany("PropostaLocacao")
-                        .HasForeignKey("IdPlanoLocacao")
+                        .HasForeignKey("PlanoLocacaoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LockAi.Models.Usuario", null)
-                        .WithMany("PropostaLocacao")
-                        .HasForeignKey("UsuarioId");
+                    b.HasOne("LockAi.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Objeto");
 
                     b.Navigation("PlanoLocacao");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("LockAi.Models.PropostaLocacaoPagamento", b =>
@@ -835,10 +746,6 @@ namespace LockAi.Migrations
 
             modelBuilder.Entity("LockAi.Models.Requerimento", b =>
                 {
-                    b.HasOne("LockAi.Models.Locacao", "Locacao")
-                        .WithMany("Requerimentos")
-                        .HasForeignKey("IdLocacao");
-
                     b.HasOne("LockAi.Models.TipoRequerimento", "TipoRequerimento")
                         .WithMany("Requerimentos")
                         .HasForeignKey("TipoRequerimentoId")
@@ -850,8 +757,6 @@ namespace LockAi.Migrations
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Locacao");
 
                     b.Navigation("TipoRequerimento");
 
@@ -912,13 +817,6 @@ namespace LockAi.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
-            modelBuilder.Entity("LockAi.Models.Locacao", b =>
-                {
-                    b.Navigation("LocacaoParceiro");
-
-                    b.Navigation("Requerimentos");
-                });
-
             modelBuilder.Entity("LockAi.Models.Objeto", b =>
                 {
                     b.Navigation("PropostaLocacao");
@@ -933,8 +831,6 @@ namespace LockAi.Migrations
 
             modelBuilder.Entity("LockAi.Models.PropostaLocacao", b =>
                 {
-                    b.Navigation("Locacao");
-
                     b.Navigation("Pagamento");
                 });
 
@@ -964,11 +860,7 @@ namespace LockAi.Migrations
                 {
                     b.Navigation("Imagens");
 
-                    b.Navigation("Locacao");
-
                     b.Navigation("PlanosLocacao");
-
-                    b.Navigation("PropostaLocacao");
 
                     b.Navigation("Requerimentos");
                 });

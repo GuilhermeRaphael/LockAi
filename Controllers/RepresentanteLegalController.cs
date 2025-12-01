@@ -7,9 +7,12 @@ using LockAi.Data;
 using LockAi.Models;
 using Microsoft.EntityFrameworkCore;
 using LockAi.Dtos;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class RepresentanteLegalController : ControllerBase

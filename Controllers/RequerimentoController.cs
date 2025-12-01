@@ -3,9 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using LockAi.Data;
 using LockAi.Models;
 using LockAi.Models.Enuns;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class RequerimentoController : ControllerBase
@@ -17,7 +20,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-        // Listar todos os requerimentos com o usuário solicitante
+        [Authorize(Policy = "Gestor")]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetRequerimentos()
         {
@@ -35,7 +38,7 @@ namespace LockAi.Controllers
             }
         }
 
-        // Consultar requerimento por ID
+       
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRequerimentoId(int id)
         {
@@ -56,6 +59,7 @@ namespace LockAi.Controllers
             }
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> CriarRequerimento([FromBody] Requerimento novoRequerimento)
         {
@@ -68,8 +72,10 @@ namespace LockAi.Controllers
                 novoRequerimento.Situacao = SituacaoRequerimentoEnum.EmAnalise;
                 novoRequerimento.DataAtualizacao = DateTime.Now;
 
-                if (novoRequerimento.UsuarioId == null || novoRequerimento.TipoRequerimentoId == null)
-                    return BadRequest($"Os campos de Id usuario e tipo requerimento devem ser preenchidos.");
+                novoRequerimento.UsuarioId = GetUsuarioIdLogado();
+
+                 if (novoRequerimento.TipoRequerimentoId == null)
+                    return BadRequest("O campo tipo requerimento deve ser preenchido.");
 
                 _context.Requerimentos.Add(novoRequerimento);
                 await _context.SaveChangesAsync();
@@ -82,6 +88,7 @@ namespace LockAi.Controllers
             }
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpGet("situacao/{situacao}")]
         public async Task<IActionResult> GetRequerimentosPorSituacao(SituacaoRequerimentoEnum situacao)
         {
@@ -93,6 +100,7 @@ namespace LockAi.Controllers
             return Ok(requerimentos);
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpPut("{id}/aprovar")]
         public async Task<IActionResult> Aprovar(int id)
         {
@@ -107,6 +115,7 @@ namespace LockAi.Controllers
             return Ok(requerimento);
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpPut("{id}/reprovar")]
         public async Task<IActionResult> Reprovar(int id)
         {
@@ -120,5 +129,16 @@ namespace LockAi.Controllers
 
             return Ok(requerimento);
         }
+
+        private int GetUsuarioIdLogado()
+        {
+            var claim = User.Claims.FirstOrDefault(c => c.Type == "id");
+
+            if (claim == null)
+                throw new Exception("Usuário não autenticado.");
+
+            return int.Parse(claim.Value);
+        }
+
     }
 }

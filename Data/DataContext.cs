@@ -26,6 +26,11 @@ namespace LockAi.Data
         public DbSet<TipoObjeto> TiposObjeto { get; set; }
         public DbSet<PlanoLocacao> PlanosLocacao { get; set; }
         public DbSet<PlanoLocacaoObjeto> PlanosLocacoesObjeto { get; set; }
+        public DbSet<PropostaLocacao> PropostaLocacao { get; set; }
+        public DbSet<PropostaLocacaoPagamento> PropostaLocacaoPagamento { get; set; }
+        public DbSet<Locacao> Locacoes { get; set; }
+        public DbSet<LocacaoParceiro> LocacoesParceiro { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,7 +83,7 @@ namespace LockAi.Data
                     IdUsuarioAtualizacao = 1
                 }
             );
-
+/*
             // Requerimento referenciando o usuário técnico
             modelBuilder.Entity<Requerimento>().HasData(
                 new Requerimento
@@ -92,8 +97,7 @@ namespace LockAi.Data
                     DataAtualizacao = new DateTime(2025, 8, 26, 10, 0, 0),
                     UsuarioId = 1
                 }
-            );
-
+            );  */
             // Plano de locação referenciando o usuário técnico
             modelBuilder.Entity<PlanoLocacao>().HasData(
                 new PlanoLocacao
@@ -115,6 +119,45 @@ namespace LockAi.Data
                 }
             );
 
+
+            /*
+                        modelBuilder.Entity<PropostaLocacaoPagamento>().HasData(
+                new PropostaLocacaoPagamento
+                {
+                    Id = 1,
+                    Data = new DateTime(2025, 9, 9),
+                    Comprovante = "comprovante1.jpg",
+                    IdUsuario = 1, // ← nome deve bater com o modelo
+                    DtConferencia = new DateTime(2025, 9, 10),
+                    IdUsuarioConferencia = 1,
+                    Situacao = SituacaoPropostaLocacaoPagamento.Aprovado,
+                    IdPropostaLocacao = 1
+                }
+            );
+
+
+                        modelBuilder.Entity<PropostaLocacao>().HasData(
+                            new PropostaLocacao
+                            {
+                                Id = 1,
+                                Data = new DateTime(2025, 9, 9),
+                                IdUsuario = 1,
+                                IdObjeto = 1,
+                                IdPlanoLocacao = 1,
+                                DtInicio = new DateTime(2025, 9, 10),
+                                DtFim = new DateTime(2025, 10, 10),
+                                DtValidade = new DateTime(2025, 9, 15),
+                                Valor = 59.90f,
+                                Situacao = SituacaoPropostaEnum.Aprovada,
+                                DtSituacao = new DateTime(2025, 9, 10),
+                                IdUsuarioSituacao = 1
+                            }
+                        );
+
+
+            */
+
+           
             // Relacionamentos
             modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.RepresentanteLegal)
@@ -137,6 +180,13 @@ namespace LockAi.Data
                 .HasOne(p => p.TipoRequerimento)
                 .WithMany(u => u.Requerimentos)
                 .HasForeignKey(p => p.TipoRequerimentoId);
+
+                
+            modelBuilder.Entity<Requerimento>()
+                .HasOne(p => p.Locacao)
+                .WithMany(u => u.Requerimentos)
+                .HasForeignKey(p => p.IdLocacao).IsRequired();
+
 
             modelBuilder.Entity<PlanoLocacao>()
                 .HasOne(u => u.Usuario)
@@ -176,11 +226,57 @@ namespace LockAi.Data
                 .WithMany(t => t.PlanoLocacaoObjetos)
                 .HasForeignKey(po => po.IdTipoObjeto)
                 .OnDelete(DeleteBehavior.Restrict);
-                
+
             modelBuilder.Entity<Objeto>()
                 .HasOne(u => u.TipoObjeto)
                 .WithMany(r => r.Objeto)
                 .HasForeignKey(p => p.IdTipoObjeto);
+
+            modelBuilder.Entity<Locacao>()
+                .HasOne(e => e.LocacaoParceiro)
+                .WithOne(e => e.Locacao)
+                .HasForeignKey<LocacaoParceiro>(e => e.IdLocacao)
+                .IsRequired();
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.Locacao)
+                .WithOne(e => e.Usuario)
+                .HasForeignKey(e => e.IdUsuario)
+                .IsRequired(false);
+
+            modelBuilder.Entity<Locacao>()
+                .HasMany(e => e.Requerimentos)
+                .WithOne(e => e.Locacao)
+                .HasForeignKey(e => e.IdLocacao)
+                .IsRequired(false);
+
+            modelBuilder.Entity<PropostaLocacao>()
+                .HasOne(u => u.PlanoLocacao)
+                .WithMany(r => r.PropostaLocacao)
+                .HasForeignKey(u => u.IdPlanoLocacao);
+            
+             modelBuilder.Entity<PropostaLocacao>()
+                .Property(p => p.IdPlanoLocacao)
+                .IsRequired();
+
+            modelBuilder.Entity<PropostaLocacao>()
+                .HasOne(p => p.Objeto)
+                .WithMany(o => o.PropostaLocacao)
+                .HasForeignKey(p => p.IdObjeto)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PropostaLocacao>()
+            .HasOne(p => p.Pagamento)
+            .WithOne(p => p.PropostaLocacao)
+            .HasForeignKey<PropostaLocacaoPagamento>(p => p.IdPropostaLocacao)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PropostaLocacao>()
+                .HasOne(u => u.Locacao)
+                .WithOne(r => r.PropostaLocacao)
+                .HasForeignKey<Locacao>(u => u.IdPropostaLocacao)
+                .IsRequired(false);
+           
         }
     }
 }

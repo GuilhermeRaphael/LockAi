@@ -1,9 +1,12 @@
 using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Serialização de enums como string
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -12,34 +15,57 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.MaxDepth = 64;
     });
 
-// Swagger/OpenAPI
 builder.Services.AddOpenApi();
 
-// Conexão com banco de dados
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoLocal")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoAzure")));
 
-// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSomee", policy =>
-        policy.WithOrigins("http://lockai.somee.com")
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins("http://localhost:5173")
               .AllowAnyMethod()
               .AllowAnyHeader());
 });
 
+var jwtKey = builder.Configuration["Jwt:Key"];
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false, 
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("Gestor", policy =>
+            policy.RequireClaim("tipo", "2"));
+
+        options.AddPolicy("Usuario", policy =>
+            policy.RequireClaim("tipo", "1"));
+    });
+
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseRouting(); // <- necessário para mapear rotas
-app.UseCors("AllowSomee"); // <- precisa vir entre Routing e Authorization
-app.UseAuthorization(); // <- mesmo que não esteja usando autenticação, é padrão
+app.UseRouting();
+app.UseCors("AllowFrontend");
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.MapControllers(); // <- mapeia os endpoints
+app.MapControllers();
 
 app.Run();

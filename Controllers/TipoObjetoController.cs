@@ -7,9 +7,13 @@ using LockAi.Models;
 using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TipoObjetoController : ControllerBase
@@ -21,6 +25,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpPost]
         public async Task<IActionResult> AddTipoObjeto(TipoObjeto novoTipoObjeto)
         {
@@ -41,11 +46,6 @@ namespace LockAi.Controllers
             {
                 return StatusCode(500, $"Erro ao adocionar tipo de objeto: {ex.Message}");
             }
-        }
-
-        private async Task<Usuario> GetUsuarioLogadoAsync()
-        {
-            return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto, mudar com a implementação do JWT
         }
 
         [HttpGet("{id}")]
@@ -86,6 +86,7 @@ namespace LockAi.Controllers
             }
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpDelete("{id}")]
 
         public async Task<IActionResult> ExcluirTipoObjeto(int id)
@@ -117,6 +118,17 @@ namespace LockAi.Controllers
             {
                 return StatusCode(500, $"Erro ao alterar situação do tipo de objeto. {ex.Message}");
             }
+        }
+
+        private async Task<Usuario> GetUsuarioLogadoAsync()
+        {
+            var userIdClaim =  User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return null;
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == userId);
         }
     }
 }
