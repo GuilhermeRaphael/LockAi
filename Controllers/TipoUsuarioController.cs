@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using LockAi.Data;
 using LockAi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TipoUsuarioController : ControllerBase

@@ -7,9 +7,13 @@ using LockAi.Models;
 using LockAi.Models.Enuns;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[Controller]")]
     public class PlanoLocacaoController : ControllerBase
@@ -21,7 +25,7 @@ namespace LockAi.Controllers
             _context = context;
         }
 
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPlanoLocacaoById(int id)
         {
@@ -90,15 +94,19 @@ namespace LockAi.Controllers
             }
         }
 
+        [Authorize(Policy = "Gestor")]
         [HttpPost]
         public async Task<IActionResult> AddPlanoLocacao(PlanoLocacao novoPlanoLocacao)
         {
             try
             {
+                var usuario = await GetUsuarioLogadoAsync();
+                if (usuario == null)
+                return Unauthorized("Usuário não identificado.");
+
                 novoPlanoLocacao.DtInclusao = DateTime.Now;
                 novoPlanoLocacao.DtAtualizacao = DateTime.Now;
 
-                var usuario = await GetUsuarioLogadoAsync();
                 novoPlanoLocacao.IdUsuarioInclusao = usuario.Id;
                 novoPlanoLocacao.IdUsuarioAtualizacao = usuario.Id;
 
@@ -112,17 +120,16 @@ namespace LockAi.Controllers
             }
         }
 
-        private async Task<Usuario> GetUsuarioLogadoAsync()
-        {
-            return await _context.Usuarios.FindAsync(1); // ID fixo por enquanto, mudar com a implementação do JWT
-        }
-
-        // ENDPOINT excluirLogico.
+        [Authorize(Policy = "Gestor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirPlanoLocacao(int id)
         {
             try
             {
+                var usuario = await GetUsuarioLogadoAsync();
+                if (usuario == null)
+                    return Unauthorized("Usuário logado não encontrado.");
+
                 PlanoLocacao planoLocacao = await _context.PlanosLocacao.FindAsync(id);
 
                 if (planoLocacao == null)
@@ -130,11 +137,6 @@ namespace LockAi.Controllers
 
                 planoLocacao.Situacao = SituacaoPlanoLocacao.Inativo;
                 planoLocacao.DtAtualizacao = DateTime.Now;
-
-                var usuario = await GetUsuarioLogadoAsync();
-                if (usuario == null)
-                    return StatusCode(500, "Usuário logado não encontrado.");
-
                 planoLocacao.IdUsuarioAtualizacao = usuario.Id;
 
                 _context.PlanosLocacao.Update(planoLocacao);
@@ -150,6 +152,17 @@ namespace LockAi.Controllers
                 return StatusCode(500, $"Erro ao alterar situação do plano de locacao. {ex.Message}");
             }
         }
-        
+
+        private async Task<Usuario> GetUsuarioLogadoAsync()
+        {
+            var userIdClaim =  User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+                return null;
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }

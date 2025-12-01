@@ -1,5 +1,9 @@
 using LockAi.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,11 +28,37 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader());
 });
 
+var jwtKey = builder.Configuration["Jwt:Key"];
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false, 
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("Gestor", policy =>
+            policy.RequireClaim("tipo", "2"));
+
+        options.AddPolicy("Usuario", policy =>
+            policy.RequireClaim("tipo", "1"));
+    });
+
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowFrontend");
+app.UseAuthentication();
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())

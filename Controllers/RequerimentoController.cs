@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using LockAi.Data;
 using LockAi.Models;
 using LockAi.Models.Enuns;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class RequerimentoController : ControllerBase

@@ -6,6 +6,7 @@ using LockAi.Data;
 using LockAi.Dtos;
 using LockAi.Models;
 using LockAi.Models.Enuns;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -13,6 +14,7 @@ using Microsoft.Identity.Client;
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TipoRequerimentoController : ControllerBase

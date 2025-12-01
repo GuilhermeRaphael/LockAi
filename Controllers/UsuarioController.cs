@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace LockAi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsuarioController : ControllerBase
@@ -84,6 +86,7 @@ namespace LockAi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> AddUsuario([FromBody] Usuario novoUsuario)
         {
