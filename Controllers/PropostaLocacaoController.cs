@@ -139,7 +139,7 @@ namespace LockAi.Controllers
             {
                 return BadRequest(new
             {
-                    message = "Erro ao salvar no banco.",
+                    message = "Erro ao salvar no banco.2",
                     innerMessage = ex.InnerException?.Message,
                     exception = ex.Message,
                     stackTrace = ex.StackTrace,
