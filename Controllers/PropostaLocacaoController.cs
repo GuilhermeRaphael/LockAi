@@ -126,16 +126,9 @@ namespace LockAi.Controllers
                 };
 
               
-                try
-                {
+                
                     _context.PropostaLocacao.Add(proposta);
                     await _context.SaveChangesAsync();
-                }
-                catch(Exception ex)
-                {
-                    var erro = ex.InnerException?.Message ?? ex.Message;
-                    return StatusCode(500, new { mensagem = "Erro ao salvar proposta de locação", erro });
-                }
                 
 
                 return Ok(new
@@ -144,6 +137,16 @@ namespace LockAi.Controllers
                     proposta
                 });
             }
+            catch (DbUpdateException ex)
+{
+    return BadRequest(new
+    {
+        message = "Erro ao salvar no banco.",
+        innerMessage = ex.InnerException?.Message,
+        exception = ex.Message,
+        stackTrace = ex.StackTrace
+    });
+}
             catch (Exception ex)
             {
                  var erro = ex.InnerException?.Message ?? ex.Message;
