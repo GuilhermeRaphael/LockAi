@@ -126,7 +126,16 @@ namespace LockAi.Controllers
                 };
 
                 _context.PropostaLocacao.Add(proposta);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch(Exception ex)
+                {
+                    var erro = ex.InnerException?.Message ?? ex.Message;
+                    return StatusCode(500, new { mensagem = "Erro ao salvar proposta de locação", erro });
+                }
+                
 
                 return Ok(new
                 {
