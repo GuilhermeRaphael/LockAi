@@ -125,9 +125,10 @@ namespace LockAi.Controllers
                     }
                 };
 
-                _context.PropostaLocacao.Add(proposta);
+              
                 try
                 {
+                    _context.PropostaLocacao.Add(proposta);
                     await _context.SaveChangesAsync();
                 }
                 catch(Exception ex)
@@ -145,7 +146,8 @@ namespace LockAi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { mensagem = "Erro interno", erro = ex.Message });
+                 var erro = ex.InnerException?.Message ?? ex.Message;
+                return StatusCode(500, new { mensagem = "Erro interno", erro });
             }
         }
 
