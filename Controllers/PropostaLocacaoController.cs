@@ -138,15 +138,15 @@ namespace LockAi.Controllers
                 });
             }
             catch (DbUpdateException ex)
-{
-    return BadRequest(new
-    {
-        message = "Erro ao salvar no banco.",
-        innerMessage = ex.InnerException?.Message,
-        exception = ex.Message,
-        stackTrace = ex.StackTrace
-    });
-}
+            {
+                return BadRequest(new
+            {
+                    message = "Erro ao salvar no banco.",
+                    innerMessage = ex.InnerException?.Message,
+                    exception = ex.Message,
+                    stackTrace = ex.StackTrace
+            });
+            }   
             catch (Exception ex)
             {
                  var erro = ex.InnerException?.Message ?? ex.Message;

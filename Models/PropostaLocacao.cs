@@ -12,8 +12,6 @@ namespace LockAi.Models
     {
         public int Id { get; set; }
         public DateTime Data { get; set; }
-        
-        [Column("UsuarioId")]
         public int IdUsuario { get; set; } //FK
         public Usuario? Usuario { get; set; } // Navegação
         public int IdObjeto { get; set; } // FK
