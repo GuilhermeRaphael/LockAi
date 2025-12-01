@@ -144,7 +144,11 @@ namespace LockAi.Controllers
                     innerMessage = ex.InnerException?.Message,
                     exception = ex.Message,
                     stackTrace = ex.StackTrace,
-                    usuarioLogado.Id
+                    usuario = new
+                    {
+                    usuarioLogado.Id,
+            
+                    }
                     
             });
             }   
