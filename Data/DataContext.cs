@@ -156,6 +156,8 @@ namespace LockAi.Data
 
 
             */
+
+           
             // Relacionamentos
             modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.RepresentanteLegal)

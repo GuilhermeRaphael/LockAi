@@ -102,7 +102,27 @@ namespace LockAi.Controllers
                     Situacao = SituacaoPropostaEnum.AguardandoPagamento,
                     DtSituacao = DateTime.Now,
                     IdUsuario = usuarioLogado.Id,            
-                    IdUsuarioSituacao = usuarioLogado.Id,  
+                    IdUsuarioSituacao = usuarioLogado.Id,
+                    Locacao = new Locacao
+                    {
+                        DataInicio = DateTime.Now,
+                        DataFim = DateTime.Now.AddDays(30),
+                        Situacao = SituacaoLocacaoEnum.AguardandoPagamento,
+                        DataSituacao = DateTime.Now,
+                        IdUsuarioSituacao = usuarioLogado.Id,
+                        IdUsuario = usuarioLogado.Id,
+                        Valor = 1000
+                    },
+                    Pagamento = new PropostaLocacaoPagamento
+                    {
+                    Data = new DateTime(2025, 9, 9),
+                    Comprovante = "comprovante1.jpg",
+                    IdUsuario = 1,
+                    DtConferencia = new DateTime(2025, 9, 10),
+                    IdUsuarioConferencia = 1,
+                    Situacao = SituacaoPropostaLocacaoPagamento.Aprovado,
+                    IdPropostaLocacao = 1
+                    }
                 };
 
                 _context.PropostaLocacao.Add(proposta);
