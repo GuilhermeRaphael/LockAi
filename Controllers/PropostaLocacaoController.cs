@@ -71,9 +71,10 @@ namespace LockAi.Controllers
        [HttpPost]
         public async Task<IActionResult> CriarProposta([FromBody] EnviarPropostaDto dto)
         {
+         var usuarioLogado = new Task<Usuario>();
             try
             {
-                var usuarioLogado = await GetUsuarioLogadoAsync();
+                 usuarioLogado = await GetUsuarioLogadoAsync();
                  if (usuarioLogado == null)
                     return Unauthorized(new { mensagem = "Usuário não autenticado." });
 
