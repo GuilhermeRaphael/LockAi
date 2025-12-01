@@ -32,7 +32,6 @@ namespace LockAi.Controllers
             try
             {
                 var lista = await _context.PropostaLocacao
-                .Include(p => p.Usuario)
                 .Include(p => p.PlanoLocacao)
                 .Include(p => p.Objeto)
                 .ToListAsync();
@@ -51,7 +50,6 @@ namespace LockAi.Controllers
             try
             {
                 var proposta = await _context.PropostaLocacao
-                .Include(p => p.Usuario)
                 .Include(p => p.PlanoLocacao)
                 .Include(p => p.Objeto)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -71,7 +69,7 @@ namespace LockAi.Controllers
        [HttpPost]
         public async Task<IActionResult> CriarProposta([FromBody] EnviarPropostaDto dto)
         {
-         var usuarioLogado = new Task<Usuario>();
+         var usuarioLogado = new Usuario();
             try
             {
                  usuarioLogado = await GetUsuarioLogadoAsync();

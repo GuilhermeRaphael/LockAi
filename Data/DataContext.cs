@@ -270,13 +270,6 @@ namespace LockAi.Data
                 .HasForeignKey<Locacao>(u => u.IdPropostaLocacao)
                 .IsRequired(false);
            
-            modelBuilder.Entity<PropostaLocacao>()
-                .HasOne(u => u.Usuario)
-                .WithMany(r => r.PropostaLocacao)
-                .HasForeignKey(u => u.IdUsuario)
-                .OnDelete(DeleteBehavior.Restrict);
-           
-
         }
     }
 }
