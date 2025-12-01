@@ -116,7 +116,7 @@ namespace LockAi.Controllers
                     Pagamento = new PropostaLocacaoPagamento
                     {
                     Data = new DateTime(2025, 9, 9),
-                    Comprovante = "comprovante1.jpg",
+                    Comprovante = "comp.jpg",
                     IdUsuario = 1,
                     DtConferencia = new DateTime(2025, 9, 10),
                     IdUsuarioConferencia = 1,
